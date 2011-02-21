@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="WINDOWS-1251" standalone="no"?>
+<jardesc>
+    <jar path="zeus/lib/lsdsoft.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/zeus/lsdsoft.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=zeus/src&lt;lsdsoft.zeus{Zeus.java[Zeus" manifestLocation="/zeus/src/manifest.mf" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.welltools"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.metrolog.unit"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.zeus.methods"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.welltools.im"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.metrolog"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.zeus"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.welltools.im.ins60"/>
+        <javaElement handleIdentifier="=zeus/src&lt;com.amper.gui"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.metrolog.admin"/>
+        <javaElement handleIdentifier="=zeus/src&lt;com.amper.io"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.metrolog.im"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.mc"/>
+        <javaElement handleIdentifier="=zeus/src&lt;com.lsdsoft.math"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.zeus.ui"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.welltools.im.ion1"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.util"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.metrolog.mdb"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.test"/>
+        <javaElement handleIdentifier="=zeus/src&lt;com.lsdsoft.comm"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.welltools.im.immn73"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.welltools.im.ion3"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.units"/>
+        <javaElement handleIdentifier="=zeus/src&lt;lsdsoft.zeus.report"/>
+    </selectedElements>
+</jardesc>
