@@ -1,0 +1,10 @@
+[PropertyInfo]
+jTabbedPane1,JTabbedPane,false,false, , ,false,<default>
+measureTable,MeasureTable,false,false, , ,false,<default>
+table,JTable,false,false, , ,false,<default>
+tableModel,MeasureTableModel,false,false, , ,false,<default>
+[IconNames]
+
+
+
+

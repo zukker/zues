@@ -1,0 +1,339 @@
+Вызов ф-ии пересчета:
+
+Angles SoftwareCalculated = Calc.CalcAngles(
+    SrcData.AXRC, SrcData.AYRC, SrcData.AZRC,
+    SrcData.FXRC, SrcData.FYRC, SrcData.FZRC,
+    SrcData.T,
+    BuildINSTar());
+
+//=========================== ПЕРЕСЧЕТ ========================================//
+    public struct Angles
+    {
+        public float Azimuth;
+        public float Zenith;
+        public float Vizir;
+    }
+
+    public static class Calc
+    {
+        #region Angles
+
+        private static float CalcTA(float T, float[] Coeffs)
+        {
+            System.Diagnostics.Debug.Assert(Coeffs.Length == 4);
+            return T * (T * (T * Coeffs[3] + Coeffs[2]) + Coeffs[1]) + Coeffs[0];
+        }
+
+        public static Angles CalcAngles(float AX, float AY, float AZ, 
+                                        float FX, float FY, float FZ, 
+                                        float T, 
+                                        INSTar Tar)
+        {
+            Angles RetVal = new Angles();
+
+            float cos_df = (float)Math.Cos(Tar.df);
+            float sin_df = (float)Math.Sin(Tar.df);
+
+            /******************************************************/
+
+            float RealAX = AX - Tar.A.x0 - CalcTA(T, Tar.tcoeffsX);
+            if (RealAX < 0) { RealAX /= Tar.A.ax_m; }
+            else { RealAX /= Tar.A.ax_p; }
+
+            float RealAY = AY - Tar.A.y0 - CalcTA(T, Tar.tcoeffsY);
+            if (RealAY < 0) { RealAY /= Tar.A.ay_m; }
+            else { RealAY /= Tar.A.ay_p; }
+
+            float RealAZ = AZ - Tar.A.z0 - CalcTA(T, Tar.tcoeffsZ);
+            if (RealAZ < 0) { RealAZ /= Tar.A.az_m; }
+            else { RealAZ /= Tar.A.az_p; }
+
+            /******************************************************/
+
+            float RealFX = FX - Tar.F.x0;
+            if (RealFX < 0) { RealFX /= Tar.F.ax_m; }
+            else { RealFX /= Tar.F.ax_p; }
+
+            float RealFY = FY - Tar.F.y0;
+            if (RealFY < 0) { RealFY /= Tar.F.ay_m; }
+            else { RealFY /= Tar.F.ay_p; }
+
+            float RealFZ = FZ - Tar.F.z0;
+            if (RealFZ < 0) { RealFZ /= Tar.F.az_m; }
+            else { RealFZ /= Tar.F.az_p; }
+
+            /******************************************************/
+            /******************************************************/
+
+            float dAX = RealAX * Tar.A.dXx + RealAY * Tar.A.dXy + RealAZ * Tar.A.dXz;
+            float dAY = RealAX * Tar.A.dYx + RealAY * Tar.A.dYy + RealAZ * Tar.A.dYz;
+            float dAZ = RealAX * Tar.A.dZx + RealAY * Tar.A.dZy + RealAZ * Tar.A.dZz;
+
+            float ax = (float)((dAX / Tar.A.d) * cos_df - (dAY / Tar.A.d) * sin_df);
+            float ay = (float)((dAX / Tar.A.d) * sin_df + (dAY / Tar.A.d) * cos_df);
+            float az = dAZ / Tar.A.d;
+
+            /******************************************************/
+
+            float dFX = RealFX * Tar.F.dXx + RealFY * Tar.F.dXy + RealFZ * Tar.F.dXz;
+            float dFY = RealFX * Tar.F.dYx + RealFY * Tar.F.dYy + RealFZ * Tar.F.dYz;
+            float dFZ = RealFX * Tar.F.dZx + RealFY * Tar.F.dZy + RealFZ * Tar.F.dZz;
+
+            float fx = (float)(dFX * cos_df - dFY * sin_df) / Tar.F.d;
+            float fy = (float)(dFX * sin_df + dFY * cos_df) / Tar.F.d;
+            float fz = dFZ / Tar.F.d;
+
+            /******************************************************/
+            /******************************************************/
+
+            const double M_PI = Math.PI;
+            const double M_PI_2 = 2 * Math.PI;
+
+            double Zenith, Vizir, Azimuth;
+
+            // Calc Zenith
+            Zenith = Math.Atan2(Math.Sqrt(ax * ax + ay * ay), az);
+            if (Zenith < 0) { Zenith += M_PI; }
+
+            // Calc Vizir
+            Vizir = Math.Atan2(ay, -ax);
+            if (Vizir < 0) { Vizir += M_PI_2; }
+            /// TODO: Check this !!!!
+            Vizir += Tar.df;
+            if (Vizir < 0) { Vizir += M_PI_2; }
+
+            // Calc Azimuth
+            double x = fx * Math.Sin(Vizir) + fy * Math.Cos(Vizir);
+            double y = (fx * Math.Cos(Vizir) - fy * Math.Sin(Vizir)) * Math.Cos(Zenith);
+            Azimuth = Math.Atan2(-x, (y + fz * Math.Sin(Zenith)));
+            if (Azimuth < 0) { Azimuth += M_PI_2; }
+
+            RetVal.Azimuth = (float)(Azimuth * 180d / Math.PI);
+            RetVal.Vizir = (float)(Vizir * 180d / Math.PI);
+            RetVal.Zenith = (float)(Zenith * 180d / Math.PI);
+
+            return RetVal;
+        }
+
+        #endregion
+    }
+//=========================== РАСЧЕТ КОЭФ КЛЯ ПЕРЕСЧЕТА ============================//
+        private INSTar BuildINSTar()
+        {
+            INSTar RetVal = new INSTar();
+
+            /*\
+             * Общие параметры
+            \*/
+            RetVal.df = Document.CurrentAppProps.VizirOffset;
+            RetVal.df = -6.26f;//(float)(-6.26f * Math.PI / 180);
+
+            /*\
+             * Температурпные коэффициенты
+            \*/
+            RetVal.tcoeffsX = TemCoeffsAX;
+            RetVal.tcoeffsY = TemCoeffsAY;
+            RetVal.tcoeffsZ = TemCoeffsAZ;
+
+            /*\
+             * Сначала для акселерометров
+            \*/
+            RetVal.A.x0 = ZeroAX;
+            RetVal.A.y0 = ZeroAY;
+            RetVal.A.z0 = ZeroAZ;
+
+            RetVal.A.ax_m = AmplNegativeAX;
+            RetVal.A.ay_m = AmplNegativeAY;
+            RetVal.A.az_m = AmplNegativeAZ;
+
+            RetVal.A.ax_p = AmplPositiveAX;
+            RetVal.A.ay_p = AmplPositiveAY;
+            RetVal.A.az_p = AmplPositiveAZ;
+
+            // Подготовим
+            float
+            d,
+            dXx, dXy, dXz,
+            dYx, dYy, dYz,
+            dZx, dZy, dZz;
+
+            // Подсчитаем
+            Wraps2Delta(
+                        WarpAlphaAX, WarpAlphaAY, WarpAlphaAZ,
+                        WarpBettaAX, WarpBettaAY, WarpBettaAZ,
+                        out d, 
+                        out dXx, out dXy, out dXz, 
+                        out dYx, out dYy, out dYz, 
+                        out dZx, out dZy, out dZz);
+
+            // Порисвоим
+            RetVal.A.d = d;
+            RetVal.A.dXx = dXx;
+            RetVal.A.dXy = dXy;
+            RetVal.A.dXz = dXz;
+            RetVal.A.dYx = dYx;
+            RetVal.A.dYy = dYy;
+            RetVal.A.dYz = dYz;
+            RetVal.A.dZx = dZx;
+            RetVal.A.dZy = dZy;
+            RetVal.A.dZz = dZz;
+
+
+            /*\
+             * Теперь для феррозрндов
+            \*/
+            RetVal.F.x0 = ZeroFX;
+            RetVal.F.y0 = ZeroFY;
+            RetVal.F.z0 = ZeroFZ;
+
+            RetVal.F.ax_m = AmplNegativeFX;
+            RetVal.F.ay_m = AmplNegativeFY;
+            RetVal.F.az_m = AmplNegativeFZ;
+
+            RetVal.F.ax_p = AmplPositiveFX;
+            RetVal.F.ay_p = AmplPositiveFY;
+            RetVal.F.az_p = AmplPositiveFZ;
+
+            // Подсчитаем
+            Wraps2Delta(
+                        WarpAlphaFX, WarpAlphaFY, WarpAlphaFZ,
+                        WarpBettaFX, WarpBettaFY, WarpBettaFZ,
+                        out d,
+                        out dXx, out dXy, out dXz,
+                        out dYx, out dYy, out dYz,
+                        out dZx, out dZy, out dZz);
+
+            // Порисвоим
+            RetVal.F.d = d;
+            RetVal.F.dXx = dXx;
+            RetVal.F.dXy = dXy;
+            RetVal.F.dXz = dXz;
+            RetVal.F.dYx = dYx;
+            RetVal.F.dYy = dYy;
+            RetVal.F.dYz = dYz;
+            RetVal.F.dZx = dZx;
+            RetVal.F.dZy = dZy;
+            RetVal.F.dZz = dZz;
+
+            return RetVal;
+        }
+//====================================== РАСЧЕТ ПРИРАЩЕНИЙ ИЗ ПЕРЕКОСОВ ================//
+        private void Wraps2Delta(
+                                float WarpAlphaX, float WarpAlphaY, float WarpAlphaZ,
+                                float WarpBettaX, float WarpBettaY, float WarpBettaZ,
+                                out float d, 
+                                out float dXx, out float dXy, out float dXz, 
+                                out float dYx, out float dYy, out float dYz, 
+                                out float dZx, out float dZy, out float dZz)
+        {
+            double AlphaX = Grad2Rad(WarpAlphaX);
+            double AlphaY = Grad2Rad(WarpAlphaY);
+            double AlphaZ = Grad2Rad(WarpAlphaZ);
+
+            double BettaX = Grad2Rad(WarpBettaX);
+            double BettaY = Grad2Rad(WarpBettaY);
+            double BettaZ = Grad2Rad(WarpBettaZ);
+
+            /*\
+             * Взято из:
+             * Расчеты углов.doc
+            \*/
+
+            d = (float)
+                (
+                Math.Cos(AlphaX) * Math.Cos(BettaX) * Math.Cos(BettaY) * Math.Cos(AlphaZ) * Math.Cos(BettaZ)
+                +
+                Math.Sin(AlphaX) * Math.Cos(BettaX) * Math.Sin(BettaY) * Math.Sin(AlphaZ) * Math.Cos(BettaZ)
+                +
+                Math.Sin(BettaX)*Math.Cos(BettaY)*Math.Sin(AlphaZ)*Math.Cos(BettaZ)
+                +
+                Math.Cos(AlphaX) * Math.Cos(BettaX) * Math.Sin(BettaY) * Math.Sin(BettaZ)
+                );
+
+            // dX?
+            dXx = (float)
+                (
+                Math.Cos(BettaY) * Math.Cos(AlphaZ) * Math.Cos(BettaZ) + Math.Sin(BettaY) * Math.Sin(BettaZ)
+                );
+            dXy = (float)
+                (
+                Math.Sin(AlphaX) * Math.Sin(BettaZ) - Math.Sin(AlphaX) * Math.Cos(BettaX) * Math.Cos(AlphaZ)
+                );
+            dXz = (float)
+                (
+                Math.Sin(AlphaX) * Math.Cos(BettaX) * Math.Sin(BettaY) + Math.Sin(BettaX) * Math.Cos(BettaY)
+                );
+
+            // dY?
+            dYx = (float)
+                (
+                Math.Sin(BettaY) * Math.Sin(AlphaZ)*Math.Cos(BettaZ)
+                );
+            dYy = (float)
+                (
+                Math.Cos(AlphaX)*Math.Cos(BettaX)*Math.Cos(AlphaZ)*Math.Cos(BettaZ) + Math.Sin(BettaX)*Math.Sin(AlphaZ)*Math.Sin(BettaZ)
+                );
+            dYz = (float)
+                (
+                Math.Cos(AlphaX)*Math.Cos(BettaX)*Math.Sin(BettaY)
+                );
+
+            // dZ?
+            dZx = (float)
+                (
+                -Math.Cos(BettaY)*Math.Sin(AlphaZ)*Math.Cos(BettaZ)
+                );
+            dZy = (float)
+                (
+                Math.Sin(AlphaX)*Math.Cos(BettaX)*Math.Sin(AlphaZ)*Math.Cos(BettaZ) + Math.Cos(AlphaX)*Math.Cos(BettaX)*Math.Sin(BettaZ)
+                );
+            dZz = (float)
+                (
+                Math.Cos(AlphaX) * Math.Cos(BettaX) * Math.Cos(BettaY)
+                );
+        }
+
+        private double Grad2Rad(double Grad)
+        {
+            return Grad * Math.PI / 180d;
+        }
+
+    public struct INSTar
+    {
+        public INSVectorTar A;
+        public INSVectorTar F;
+
+        public float[] tcoeffsX;
+        public float[] tcoeffsY;
+        public float[] tcoeffsZ;
+
+        public float df;
+
+    }
+    
+    public struct INSVectorTar
+    {
+        public float x0;
+        public float y0;
+        public float z0;
+
+        public float ax_p;
+        public float ay_p;
+        public float az_p;
+        public float ax_m;
+        public float ay_m;
+        public float az_m;
+
+        public float dXx;
+        public float dXy;
+        public float dXz;
+        public float dYx;
+        public float dYy;
+        public float dYz;
+        public float dZx;
+        public float dZy;
+        public float dZz;
+
+        public float d;
+    }
+

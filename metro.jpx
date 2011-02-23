@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--JBuilder XML Project-->
+<project>
+  <property category="debug.1" name="BuildTargetOnDebug" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="debug.2" name="BuildTargetOnDebug" value="&lt;None&gt;"/>
+  <property category="debug.5" name="BuildTargetOnDebug" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="generalFormatting" name="blockIndent" value="4"/>
+  <property category="generalFormatting2" name="blockIndent" value="4"/>
+  <property category="generalFormatting2" name="overrideBasicFormatting" value="1"/>
+  <property category="idl" name="ProcessIDL" value="false"/>
+  <property category="java.sapient" name="ACE" value="false"/>
+  <property category="java.sapient" name="AFLV" value="true"/>
+  <property category="java.sapient" name="AFP" value="false"/>
+  <property category="java.sapient" name="ASMDCN" value="true"/>
+  <property category="java.sapient" name="ASMO" value="true"/>
+  <property category="java.sapient" name="BSMC" value="true"/>
+  <property category="java.sapient" name="BTJC" value="false"/>
+  <property category="java.sapient" name="CA" value="false"/>
+  <property category="java.sapient" name="CEV" value="false"/>
+  <property category="java.sapient" name="CFPV" value="false"/>
+  <property category="java.sapient" name="CIUCFL" value="true"/>
+  <property category="java.sapient" name="CQS" value="false"/>
+  <property category="java.sapient" name="CSR" value="true"/>
+  <property category="java.sapient" name="CVSBF" value="true"/>
+  <property category="java.sapient" name="DIH" value="true"/>
+  <property category="java.sapient" name="EIAV" value="false"/>
+  <property category="java.sapient" name="EJB_CL" value="false"/>
+  <property category="java.sapient" name="EJB_CONSOLE" value="false"/>
+  <property category="java.sapient" name="EJB_ENTITY" value="false"/>
+  <property category="java.sapient" name="EJB_FDESCR" value="false"/>
+  <property category="java.sapient" name="EJB_FILES" value="false"/>
+  <property category="java.sapient" name="EJB_HOME" value="false"/>
+  <property category="java.sapient" name="EJB_IO" value="false"/>
+  <property category="java.sapient" name="EJB_JDBC" value="false"/>
+  <property category="java.sapient" name="EJB_MESSAGE" value="false"/>
+  <property category="java.sapient" name="EJB_NAMES" value="false"/>
+  <property category="java.sapient" name="EJB_NATIVE" value="false"/>
+  <property category="java.sapient" name="EJB_OBJECT" value="false"/>
+  <property category="java.sapient" name="EJB_REFL" value="false"/>
+  <property category="java.sapient" name="EJB_SEC" value="false"/>
+  <property category="java.sapient" name="EJB_SECOBJ" value="false"/>
+  <property category="java.sapient" name="EJB_SESSION" value="false"/>
+  <property category="java.sapient" name="EJB_SFACT" value="false"/>
+  <property category="java.sapient" name="EJB_SOCKET" value="false"/>
+  <property category="java.sapient" name="EJB_SUBST" value="false"/>
+  <property category="java.sapient" name="EJB_THREADS" value="false"/>
+  <property category="java.sapient" name="EOBA" value="true"/>
+  <property category="java.sapient" name="EVC" value="true"/>
+  <property category="java.sapient" name="ICSBF" value="false"/>
+  <property category="java.sapient" name="IFM" value="true"/>
+  <property category="java.sapient" name="ILC" value="false"/>
+  <property category="java.sapient" name="IMCM" value="true"/>
+  <property category="java.sapient" name="IMMD" value="true"/>
+  <property category="java.sapient" name="LF" value="false"/>
+  <property category="java.sapient" name="LMC" value="true"/>
+  <property category="java.sapient" name="LNU" value="true"/>
+  <property category="java.sapient" name="MCP" value="true"/>
+  <property category="java.sapient" name="MCS" value="true"/>
+  <property category="java.sapient" name="MLOWP" value="false"/>
+  <property category="java.sapient" name="MNOM" value="true"/>
+  <property category="java.sapient" name="MNU" value="true"/>
+  <property category="java.sapient" name="MSOL" value="true"/>
+  <property category="java.sapient" name="MVDSN" value="false"/>
+  <property category="java.sapient" name="NC" value="true"/>
+  <property category="java.sapient" name="NCLS" value="true"/>
+  <property category="java.sapient" name="NFSF" value="false"/>
+  <property category="java.sapient" name="NLC" value="false"/>
+  <property category="java.sapient" name="NOIS" value="false"/>
+  <property category="java.sapient" name="ODCM" value="false"/>
+  <property category="java.sapient" name="OHCE" value="true"/>
+  <property category="java.sapient" name="OIM" value="true"/>
+  <property category="java.sapient" name="ONAMAM" value="true"/>
+  <property category="java.sapient" name="ONE" value="true"/>
+  <property category="java.sapient" name="OPM" value="true"/>
+  <property category="java.sapient" name="OSNBU" value="false"/>
+  <property category="java.sapient" name="OWS" value="false"/>
+  <property category="java.sapient" name="PCO" value="true"/>
+  <property category="java.sapient" name="PDBB" value="false"/>
+  <property category="java.sapient" name="PFC" value="false"/>
+  <property category="java.sapient" name="PIFS" value="false"/>
+  <property category="java.sapient" name="PJDC" value="false"/>
+  <property category="java.sapient" name="PMSNT" value="false"/>
+  <property category="java.sapient" name="PN" value="true"/>
+  <property category="java.sapient" name="PPA" value="false"/>
+  <property category="java.sapient" name="PPCF" value="true"/>
+  <property category="java.sapient" name="PSIB" value="true"/>
+  <property category="java.sapient" name="RIP" value="false"/>
+  <property category="java.sapient" name="SBC" value="true"/>
+  <property category="java.sapient" name="SEB" value="false"/>
+  <property category="java.sapient" name="SL" value="false"/>
+  <property category="java.sapient" name="SSSIDC" value="true"/>
+  <property category="java.sapient" name="SU" value="true"/>
+  <property category="java.sapient" name="TMSSC" value="true"/>
+  <property category="java.sapient" name="UAAO" value="true"/>
+  <property category="java.sapient" name="UC" value="true"/>
+  <property category="java.sapient" name="UCVN" value="true"/>
+  <property category="java.sapient" name="UE" value="true"/>
+  <property category="java.sapient" name="UL" value="true"/>
+  <property category="java.sapient" name="ULVFP" value="true"/>
+  <property category="java.sapient" name="UMM" value="true"/>
+  <property category="java.sapient" name="URSP" value="true"/>
+  <property category="java.sapient" name="enable" value="1"/>
+  <property category="javaFormatting" name="EventStyle" value="0"/>
+  <property category="javaFormatting" name="blankLinesAfterClass" value="2"/>
+  <property category="javaFormatting" name="blankLinesAfterImports" value="2"/>
+  <property category="javaFormatting" name="blankLinesAfterPackage" value="2"/>
+  <property category="javaFormatting" name="catchOnNewLine" value="0"/>
+  <property category="javaFormatting" name="elseOnNewLine" value="0"/>
+  <property category="javaFormatting" name="packagePrefixGroups" value="java;javax;BLANK_LINE;java.awt;javax.swing;BLANK_LINE;org;(*)"/>
+  <property category="javaFormatting" name="packagePrefixGroups.1" value="&lt;*&gt;"/>
+  <property category="javaFormatting" name="parenthesisPadding" value="1"/>
+  <property category="javaFormatting" name="spaceAfterTypecast" value="0"/>
+  <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
+  <property category="jspc" name="checkEnabled" value="0"/>
+  <property category="optimize.0" name="OptimizableType" value="intuitive.ide.borland.jb10.ProfilerBootstrap"/>
+  <property category="optimize.0" name="oicc.FilterFile" value="D:\Projects\zeus\metro.oif"/>
+  <property category="optimize.0" name="oipr.EnableUnitTest" value="0"/>
+  <property category="optimize.0" name="oipr.FilterFile" value="D:\Projects\zeus\metro.oif"/>
+  <property category="optimize.0" name="oira.AttachHost" value="localhost"/>
+  <property category="optimize.0" name="oira.FilterFile" value="D:\Projects\zeus\metro.oif"/>
+  <property category="optimize.1" name="BuildTargetOnOptimize" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="optimize.1" name="OptimizableType" value="com.borland.jbuilder.optimize.IntroOptimizeitProfiler"/>
+  <property category="optimize.2" name="OptimizableType" value="com.borland.jbuilder.optimize.IntroOptimizeitProfiler"/>
+  <property category="optimize.5" name="BuildTargetOnOptimize" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="optimize.5" name="OptimizableType" value="com.borland.jbuilder.optimize.IntroOptimizeitProfiler"/>
+  <property category="personality" name="personality" value=""/>
+  <property category="runtime" name="ConfigurationCount" value="5"/>
+  <property category="runtime.0" name="BuildTargetOnRun" value="&lt;None&gt;"/>
+  <property category="runtime.0" name="ConfigurationName" value="Zeus"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.0" name="application.class" value="lsdsoft.zeus.Zeus"/>
+  <property category="runtime.0" name="appserver.parameters" value=""/>
+  <property category="runtime.0" name="appserver.servername" value=""/>
+  <property category="runtime.0" name="appserver.vmparameters" value=""/>
+  <property category="runtime.0" name="custom.init_required" value="0"/>
+  <property category="runtime.0" name="custom.jdk" value="java version 1.4.1-b21"/>
+  <property category="runtime.0" name="custom.required.1" value="Comm"/>
+  <property category="runtime.0" name="custom.required.2" value="Maclaf"/>
+  <property category="runtime.0" name="custom.required.3" value="Xerces"/>
+  <property category="runtime.0" name="custom.required.4" value="JBCL"/>
+  <property category="runtime.0" name="custom.required.5" value="Zeus resorces"/>
+  <property category="runtime.0" name="custom.required.6" value="logging"/>
+  <property category="runtime.0" name="custom.required.7" value="BeanShell"/>
+  <property category="runtime.0" name="server.arguments" value=""/>
+  <property category="runtime.0" name="server.disableServerClassTracing" value="0"/>
+  <property category="runtime.0" name="server.instance.name" value=""/>
+  <property category="runtime.0" name="server.name" value="Tomcat 4.0"/>
+  <property category="runtime.0" name="server.vmparameters" value=""/>
+  <property category="runtime.0" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.1" name="BuildTargetOnRun" value="&lt;None&gt;"/>
+  <property category="runtime.1" name="ConfigurationName" value="tester"/>
+  <property category="runtime.1" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.1" name="application.class" value="lsdsoft.test.tester"/>
+  <property category="runtime.1" name="appserver.parameters" value=""/>
+  <property category="runtime.1" name="appserver.servername" value=""/>
+  <property category="runtime.1" name="appserver.vmparameters" value=""/>
+  <property category="runtime.1" name="server.arguments" value=""/>
+  <property category="runtime.1" name="server.disableServerClassTracing" value="0"/>
+  <property category="runtime.1" name="server.instance.name" value=""/>
+  <property category="runtime.1" name="server.name" value="Tomcat 4.0"/>
+  <property category="runtime.1" name="server.vmparameters" value=""/>
+  <property category="runtime.1" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.2" name="BuildTargetOnRun" value="&lt;None&gt;"/>
+  <property category="runtime.2" name="ConfigurationName" value="UAKSI conf"/>
+  <property category="runtime.2" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.2" name="application.class" value="lsdsoft.test.TestUAKSI"/>
+  <property category="runtime.2" name="appserver.parameters" value=""/>
+  <property category="runtime.2" name="appserver.servername" value=""/>
+  <property category="runtime.2" name="appserver.vmparameters" value=""/>
+  <property category="runtime.2" name="server.arguments" value=""/>
+  <property category="runtime.2" name="server.disableServerClassTracing" value="0"/>
+  <property category="runtime.2" name="server.instance.name" value=""/>
+  <property category="runtime.2" name="server.name" value="Tomcat 4.0"/>
+  <property category="runtime.2" name="server.vmparameters" value=""/>
+  <property category="runtime.2" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="runtime.3" name="BuildTargetOnRun" value="&lt;None&gt;"/>
+  <property category="runtime.3" name="ConfigurationName" value="Proga"/>
+  <property category="runtime.3" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.3" name="application.class" value="lsdsoft.mc.Proga"/>
+  <property category="runtime.4" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.4" name="ConfigurationName" value="Test ION3"/>
+  <property category="runtime.4" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.4" name="application.class" value="lsdsoft.test.TestION3"/>
+  <property category="runtime.5" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
+  <property category="runtime.5" name="ConfigurationName" value="testAprox"/>
+  <property category="runtime.5" name="ExclusionFilter" value="1"/>
+  <property category="runtime.5" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.5" name="application.class" value="lsdsoft.test.TestApprox"/>
+  <property category="runtime.5" name="application.parameters" value="d:/table_02.txt"/>
+  <property category="runtime.5" name="appserver.parameters" value=""/>
+  <property category="runtime.5" name="appserver.servername" value=""/>
+  <property category="runtime.5" name="appserver.vmparameters" value=""/>
+  <property category="runtime.5" name="server.arguments" value=""/>
+  <property category="runtime.5" name="server.disableServerClassTracing" value="0"/>
+  <property category="runtime.5" name="server.instance.name" value=""/>
+  <property category="runtime.5" name="server.name" value="Tomcat 4.0"/>
+  <property category="runtime.5" name="server.vmparameters" value=""/>
+  <property category="runtime.5" name="test.harness" value="com.borland.jbuilder.unittest.JBTestRunner"/>
+  <property category="serverservices" name="WarnedOfLegacyToCurrentServerChange" value="1"/>
+  <property category="serverservices" name="disabled.services" value="connector;jdatastore;sqlj"/>
+  <property category="serverservices" name="single.server.name" value="Tomcat 4.1"/>
+  <property category="sys" name="AuthorLabel" value="@author"/>
+  <property category="sys" name="BackupPath" value="build/bak"/>
+  <property category="sys" name="BeansInstantiate" value="false"/>
+  <property category="sys" name="BraceStyle" value="0"/>
+  <property category="sys" name="CheckStable" value="1"/>
+  <property category="sys" name="Company" value="Ural-Geo"/>
+  <property category="sys" name="CompanyLabel" value="Company:"/>
+  <property category="sys" name="Copyright" value="Copyright (c) 2004"/>
+  <property category="sys" name="CopyrightLabel" value="Copyright:"/>
+  <property category="sys" name="DefaultPath" value="src"/>
+  <property category="sys" name="Description" value=""/>
+  <property category="sys" name="DescriptionLabel" value="Description:"/>
+  <property category="sys" name="DocPath" value="doc"/>
+  <property category="sys" name="Encoding" value="Cp1251"/>
+  <property category="sys" name="EventMatch" value="false"/>
+  <property category="sys" name="EventStyle" value="1"/>
+  <property category="sys" name="ExcludeClassEnabled" value="0"/>
+  <property category="sys" name="IncludeTestPath" value="1"/>
+  <property category="sys" name="InstanceVisibility" value="2"/>
+  <property category="sys" name="JDK" value="java version 1.5.0_03-b07"/>
+  <property category="sys" name="JbxEventListener0" value="lsdsoft.metrolog.ChannelDataEventListener"/>
+  <property category="sys" name="JvmVersion" value="1.4"/>
+  <property category="sys" name="LastTag" value="0"/>
+  <property category="sys" name="Libraries" value="Comm;Maclaf;Xerces;JBCL;Zeus resorces;logging;BeanShell"/>
+  <property category="sys" name="OutPath" value="build/classes"/>
+  <property category="sys" name="SourcePath" value="src;../simple-log-1.4/src"/>
+  <property category="sys" name="SourceVersion" value="1.4"/>
+  <property category="sys" name="TestPath" value="src"/>
+  <property category="sys" name="Title" value=""/>
+  <property category="sys" name="TitleLabel" value="Title:"/>
+  <property category="sys" name="Version" value="1.0"/>
+  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="WorkingDirectory" value="../../zeus/jre/bin"/>
+  <property category="sys" name="palette.bean.chooser.beans" value="Wonderland;"/>
+  <property category="sys" name="uidesign.size.lsdsoft.mc.Proga" value="465,324"/>
+  <property category="sys" name="uidesign.size.lsdsoft.test.TestUAKSI" value="498,417"/>
+  <property category="sys" name="uidesign.size.lsdsoft.test.TestUAKSI2" value="641,420"/>
+  <property category="sys" name="uidesign.size.lsdsoft.zeus.PanelSelectDatas" value="423,300"/>
+  <property category="sys" name="uidesign.size.lsdsoft.zeus.Wizard" value="438,300"/>
+  <property category="sys" name="uidesign.size.lsdsoft.zeus.methods.InklImportLas" value="700,416"/>
+  <property category="sys" name="uidesign.size.lsdsoft.zeus.ui.MeasureChainEditor" value="403,300"/>
+  <property category="team" name="ignorePath.0" value="build/bak"/>
+  <property category="team" name="ignorePath.1" value="build/classes"/>
+  <property category="team" name="ignorePath.2" value=".localdata"/>
+  <property category="team" name="ignorePath.3" value="doc"/>
+  <node name="Additional Settings" type="Folder">
+    <property category="sys" name="SettingsFolder" value="1"/>
+    <file path="src/images/disk01.png">
+      <property category="build" name="CopyResource" value="1"/>
+    </file>
+  </node>
+  <node name="lsdsoft" type="Archive">
+    <property category="archiving" name="extraDeployRoots.1" value="C:lsdsoft.*"/>
+    <property category="archiving" name="includeDeps" value="1"/>
+    <property category="archiving" name="outPathState" value="6"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="lib/lsdsoft.jar"/>
+  </node>
+  <node name="Native Executable" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ExecutableArchiver"/>
+    <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="executableEnabled.1" value="1"/>
+    <property category="archiving" name="executableEnabled.2" value="0"/>
+    <property category="archiving" name="executableEnabled.3" value="0"/>
+    <property category="archiving" name="executableEnabled.4" value="0"/>
+    <property category="archiving" name="executableEnabled.5" value="0"/>
+    <property category="archiving" name="executableFiles.1" value=""/>
+    <property category="archiving" name="executableFiles.2" value=""/>
+    <property category="archiving" name="executableFiles.3" value=""/>
+    <property category="archiving" name="executableFiles.4" value=""/>
+    <property category="archiving" name="executableFiles.5" value=""/>
+    <property category="archiving" name="includeAll" value="1"/>
+    <property category="archiving" name="libraryStates.1" value="1:Comm"/>
+    <property category="archiving" name="libraryStates.2" value="3:Maclaf"/>
+    <property category="archiving" name="libraryStates.3" value="3:Xerces"/>
+    <property category="archiving" name="libraryStates.4" value="3:Zeus resorces"/>
+    <property category="archiving" name="libraryStates.5" value="3:logging"/>
+    <property category="archiving" name="libraryStates.6" value="3:BeanShell"/>
+    <property category="archiving" name="manifestConfigFile" value="0"/>
+    <property category="archiving" name="obfuscator" value="RetroGuard for J2ME"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="metro.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <node name="SmartCache" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ApplicationArchiver"/>
+    <property category="archiving" name="contentRules.1" value="I:scache/*.*"/>
+    <property category="archiving" name="contentRules.2" value="I:gnu/*.*"/>
+    <property category="archiving" name="includeDeps" value="1"/>
+    <property category="archiving" name="manifestMainClass" value="scache"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="D%|/Projects/Java/smartcache/scache.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <node name="Standard Doclet" type="Javadoc">
+    <property category="nodeJavadoc" name="buildWithProject" value="0"/>
+    <property category="nodeJavadoc" name="directory" value="doc"/>
+    <property category="nodeJavadoc" name="displayAllOutput" value="0"/>
+  </node>
+  <node name="Zeus" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ExecutableArchiver"/>
+    <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="executableEnabled.1" value="1"/>
+    <property category="archiving" name="executableEnabled.2" value="1"/>
+    <property category="archiving" name="executableEnabled.3" value="0"/>
+    <property category="archiving" name="executableEnabled.4" value="0"/>
+    <property category="archiving" name="executableEnabled.5" value="0"/>
+    <property category="archiving" name="executableFiles.1" value="zeusW.exe"/>
+    <property category="archiving" name="executableFiles.2" value="metro2.exe"/>
+    <property category="archiving" name="executableFiles.3" value="metro2-linux"/>
+    <property category="archiving" name="executableFiles.4" value="metro2-solaris"/>
+    <property category="archiving" name="executableFiles.5" value="metro2-mac"/>
+    <property category="archiving" name="libraryStates.1" value="1:Comm"/>
+    <property category="archiving" name="manifestConfigFile" value="0"/>
+    <property category="archiving" name="obfuscator" value="RetroGuard for J2ME"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="lib/lsdsoft.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <node name="Zeus-ex" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ExecutableArchiver"/>
+    <property category="archiving" name="executableEnabled.1" value="1"/>
+    <property category="archiving" name="executableEnabled.2" value="1"/>
+    <property category="archiving" name="executableEnabled.3" value="0"/>
+    <property category="archiving" name="executableEnabled.4" value="0"/>
+    <property category="archiving" name="executableEnabled.5" value="0"/>
+    <property category="archiving" name="executableFiles.1" value="zeusW.exe"/>
+    <property category="archiving" name="executableFiles.2" value="metro.exe"/>
+    <property category="archiving" name="executableFiles.3" value="metro-linux"/>
+    <property category="archiving" name="executableFiles.4" value="metro-solaris"/>
+    <property category="archiving" name="executableFiles.5" value="metro-mac"/>
+    <property category="archiving" name="extraDeployRoots.1" value="C:lsdsoft.*"/>
+    <property category="archiving" name="libraryStates.1" value="3:Comm"/>
+    <property category="archiving" name="libraryStates.2" value="3:Maclaf"/>
+    <property category="archiving" name="libraryStates.3" value="3:Xerces"/>
+    <property category="archiving" name="manifestConfigFile" value="0"/>
+    <property category="archiving" name="manifestMainClass" value="lsdsoft.zeus.Zeus"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="lib/lsdsoft.jar"/>
+  </node>
+  <node name="Zeus res" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.AppletArchiver"/>
+    <property category="archiving" name="buildWithProject" value="0"/>
+    <property category="archiving" name="contentRules.1" value="I:images/*.*"/>
+    <property category="archiving" name="contentRules.2" value="I:images/**"/>
+    <property category="archiving" name="contentRules.3" value="I:images/disk01.png"/>
+    <property category="archiving" name="contentRules.4" value="I:images/disk02.png"/>
+    <property category="archiving" name="contentRules.5" value="I:images/note01.png"/>
+    <property category="archiving" name="contentRules.6" value="F:src/images/disk01.png;images/disk01.png"/>
+    <property category="archiving" name="contentRules.7" value="F:src/images/disk02.png;images/disk02.png"/>
+    <property category="archiving" name="contentRules.8" value="F:src/images/note01.png;images/note01.png"/>
+    <property category="archiving" name="defaultLibraryState" value="3"/>
+    <property category="archiving" name="includeManifest" value="0"/>
+    <property category="archiving" name="libraryStates.1" value="0:Comm"/>
+    <property category="archiving" name="libraryStates.2" value="0:Maclaf"/>
+    <property category="archiving" name="libraryStates.3" value="0:Xerces"/>
+    <property category="archiving" name="libraryStates.4" value="0:JBCL"/>
+    <property category="archiving" name="libraryStates.5" value="0:Data Express"/>
+    <property category="archiving" name="libraryStates.6" value="0:Zeus resorces"/>
+    <property category="archiving" name="libraryStates.7" value="0:logging"/>
+    <property category="archiving" name="libraryStates.8" value="0:BeanShell"/>
+    <property category="archiving" name="obfuscator" value="RetroGuard"/>
+    <property category="archiving" name="targetPath" value="lib/zeus_res.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <file path="src/lsdsoft/test/BoxLayoutDemo.java"/>
+  <file path="MANIFEST.MF"/>
+  <file path="metro.config"/>
+  <file path="metro.html"/>
+</project>

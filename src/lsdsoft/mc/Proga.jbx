@@ -1,0 +1,20 @@
+[PropertyInfo]
+buttonGroup1,ButtonGroup,false,false, , ,false,<default>
+jButton1,JButton,false,false, , ,false,<default>
+jButton2,JButton,false,false, , ,false,<default>
+jButton3,JButton,false,false, , ,false,<default>
+jButton4,JButton,false,false, , ,false,<default>
+jButton5,JButton,false,false, , ,false,<default>
+jComboBox1,JComboBox,false,false, , ,false,<default>
+jComboBox2,JComboBox,false,false, , ,false,<default>
+jLabel1,JLabel,false,false, , ,false,<default>
+jLabel2,JLabel,false,false, , ,false,<default>
+jLabel3,JLabel,false,false, , ,false,<default>
+jRadioButton1,JRadioButton,false,false, , ,false,<default>
+jRadioButton2,JRadioButton,false,false, , ,false,<default>
+jTextField1,JTextField,false,false, , ,false,<default>
+[IconNames]
+
+
+
+

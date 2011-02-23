@@ -1,0 +1,69 @@
+/*
+table: welltools
+Скважинные приборы (описательная информация)
+*/
+
+USE MIS
+
+CREATE TABLE IF NOT EXISTS welltools (
+  id        CHAR(15) NOT NULL,  /* уникальный идентификатор типа прибора */
+  name      TINYBLOB NOT NULL,  /* название прибора (unicode)*/
+  length    INT UNSIGNED,       /* длина в миллиметрах */
+  diameter  INT UNSIGNED,       /* диаметер прибора в мм */
+  mass      INT UNSIGNED,       /* масса прибора в граммах */
+  hchannels INT UNSIGNED,       /* количество аппаратных каналов (количество жил) */
+  PRIMARY KEY (id)
+)
+
+/*
+Информация по аппаратному каналу скважинного прибора
+*/
+
+CREATE TABLE IF NOT EXISTS info_channels (
+  wt_id     CHAR(15) NOT NULL,  /* идентификатор скважинного прибора */
+  hc        INT UNSIGNED,       /* номер аппаратного канала (номер жилы) */
+  type_id   INT UNSIGNED,       /* тип сигнала в канале (импульсный, ксат, манчестер ...) */
+  auto      ENUM("Y", "N"),     /* автономный прибор? */
+  INDEX channel_id (wt_id, hc) 
+)
+
+/*
+Описание запитки по жилам прибора
+*/
+
+CREATE TABLE IF NOT EXISTS wt_power (
+  wt_id     CHAR(15) NOT NULL,  /* идентификатор скважинного прибора */
+  hc        INT UNSIGNED,       /* номер аппаратного канала (номер жилы) */
+  voltage   FLOAT,              /* номинальное напряжение на жиле (если надо) */
+  v_delta   FLOAT,              /* предельное отклонение от номинала */
+  current   FLOAT,              /* номинальный ток на жиле */
+  c_delta   FLOAT               /* отклонение по току */
+)
+
+/*
+ Информация об организациях
+*/
+
+CREATE TABLE org (
+  id    INT UNSIGNED,           /* инкальный идентификатор организации (обычно хэш имени)*/
+  name  BLOB NOT NULL,          /* полное название организации (unicode) */
+  short BLOB NOT NULL           /* краткое название организации */
+)
+
+/*
+  Числящиеся за организациями скважинные приборы
+*/
+
+CREATE TABLE wt_stock (
+  org_id     INT UNSIGNED,      /* идентификатор организации */
+  wt_id      CHAR(15) NOT NULL, /* идентификатор прибора */
+  number     CHAR(15) NOT NULL, /* забодской номер */
+  work       ENUM("Y", "N"),    /* рабочий или списанный прибор */
+  in_date    DATE,              /* дата приобретения */
+  leave_date DATE,              /* дата списания */
+  INDEX wt_id (org_id, wt_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS calibration (
+);

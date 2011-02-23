@@ -1,0 +1,16 @@
+[PropertyInfo]
+cunit,UAKSICheckUnit,false,false, , ,false,<default>
+jButton1,JButton,false,false, , ,false,<default>
+jLabel1,JLabel,false,false, , ,false,<default>
+jLabel2,JLabel,false,false, , ,false,<default>
+jLabel3,JLabel,false,false, , ,false,<default>
+jLabel4,JLabel,false,false, , ,false,<default>
+jSlider1,JSlider,false,false, , ,false,<default>
+jTextField1,JTextField,false,false, , ,false,<default>
+labelX,JLabel,false,false, , ,false,<default>
+labelY,JLabel,false,false, , ,false,<default>
+[IconNames]
+
+
+
+

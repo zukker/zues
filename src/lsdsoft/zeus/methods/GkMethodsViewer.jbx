@@ -1,0 +1,74 @@
+[PropertyInfo]
+accAngles,InklinometerAngles,false,false, , ,false,<default>
+bConnect,JButton,false,false, , ,false,<default>
+bgWhat,ButtonGroup,false,false, , ,false,<default>
+border1,Border,false,false, , ,false,<default>
+border2,Border,false,false, , ,false,<default>
+bProtocol,JButton,false,false, , ,false,<default>
+bSave,JButton,false,false, , ,false,<default>
+bStart,JButton,false,false, , ,false,<default>
+bStop,JButton,false,false, , ,false,<default>
+cbAzZeniths,JComboBox,false,false, , ,false,<default>
+cbDo,JComboBox,false,false, , ,false,<default>
+cbZenRotates,JComboBox,false,false, , ,false,<default>
+changeAction,Action,false,false, , ,false,<default>
+commandMeasure,Command,false,false, , ,false,<default>
+commands,Command[],false,false, , ,false,<default>
+displayAX,DigitalDisplay,false,false, , ,false,<default>
+displayAY,DigitalDisplay,false,false, , ,false,<default>
+displayAZ,DigitalDisplay,false,false, , ,false,<default>
+displayTX,DigitalDisplay,false,false, , ,false,<default>
+displayTY,DigitalDisplay,false,false, , ,false,<default>
+displayTZ,DigitalDisplay,false,false, , ,false,<default>
+executer,CommandExecuter,false,false, , ,false,<default>
+iconOff,ImageIcon,false,false, , ,false,<default>
+iconOn,ImageIcon,false,false, , ,false,<default>
+imgDigAX,JImage,false,false, , ,false,<default>
+imgDigAY,JImage,false,false, , ,false,<default>
+imgDigAZ,JImage,false,false, , ,false,<default>
+imgDigTX,JImage,false,false, , ,false,<default>
+imgDigTY,JImage,false,false, , ,false,<default>
+imgDigTZ,JImage,false,false, , ,false,<default>
+jLabel1,JLabel,false,false, , ,false,<default>
+jLabel10,JLabel,false,false, , ,false,<default>
+jLabel11,JLabel,false,false, , ,false,<default>
+jLabel2,JLabel,false,false, , ,false,<default>
+jLabel3,JLabel,false,false, , ,false,<default>
+jLabel4,JLabel,false,false, , ,false,<default>
+jLabel5,JLabel,false,false, , ,false,<default>
+jLabel6,JLabel,false,false, , ,false,<default>
+jLabel7,JLabel,false,false, , ,false,<default>
+jLabel8,JLabel,false,false, , ,false,<default>
+jLabel9,JLabel,false,false, , ,false,<default>
+jPanel1,JPanel,false,false, , ,false,<default>
+jToolBar1,JToolBar,false,false, , ,false,<default>
+lMessage1,JLabel,false,false, , ,false,<default>
+lMessage2,JLabel,false,false, , ,false,<default>
+lMessage3,JLabel,false,false, , ,false,<default>
+lTimeElapsed,JLabel,false,false, , ,false,<default>
+lTimeStart,JLabel,false,false, , ,false,<default>
+measureAction,Action,false,false, , ,false,<default>
+measureDatas,MeasureDatas,false,false, , ,true,<default>
+panelAcc,JPanel,false,false, , ,false,<default>
+panelDisplay,JPanel,false,false, , ,false,<default>
+panelHeader,JPanel,false,false, , ,false,<default>
+panelTool,JPanel,false,false, , ,false,<default>
+panelX,JPanel,false,false, , ,false,<default>
+panelY,JPanel,false,false, , ,false,<default>
+panelZ,JPanel,false,false, , ,false,<default>
+properties,Properties,false,false, , ,true,<default>
+selectedCommand,int,false,false, , ,false,<default>
+selectedContainer,TableContainer,false,false, , ,false,<default>
+tabbedTables,JTabbedPane,false,false, , ,false,<default>
+tables,TableContainer[],false,false, , ,false,<default>
+titledBorder1,TitledBorder,false,false, , ,false,<default>
+titledBorder2,TitledBorder,false,false, , ,false,<default>
+titledBorder3,TitledBorder,false,false, , ,false,<default>
+titledBorder4,TitledBorder,false,false, , ,false,<default>
+toolAngles,InklinometerAngles,false,false, , ,false,<default>
+toolValue,double,false,false, , ,false,<default>
+[IconNames]
+
+
+
+
