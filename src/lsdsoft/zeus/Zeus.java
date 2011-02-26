@@ -31,7 +31,7 @@ import com.amper.io.AProperties;
  */
 
 public class Zeus {
-    public static final SimpleLogger log = new SimpleLogger(Zeus.class);
+    public static SimpleLogger log;
     // current work mode
     public static final String PROP_WORK_MODE = "workmode";
     public static final String DEFAULT_WORK_MODE = "calib";
@@ -72,7 +72,9 @@ public class Zeus {
     private Properties logproperties = new Properties();
     private Properties rigs = new Properties();
 
-    private String workDir = "/zeus/";
+    private static String workDir = "/zeus/";
+    private static URL wdUrl = null;
+    
     private static String zeusPropertiesFile = "zeus.properties";
     private Wizard wizard;
     private WorkMode workMode = new WorkMode( WorkMode.MODE_CALIB );
@@ -208,27 +210,30 @@ public class Zeus {
     public void setWorkID(String id) {
         config.setProperty(PROP_WORK_ID, id);
     }
-
     public void loadProperties( Properties props, String filename ) throws Exception {
-        /** @todo load props relative jars
-        */
-        //URL url = ClassLoader.getSystemClassLoader().getResource("lsdsoft.jar");
-        //url = new URL( url, "/zeus/etc/" + filename );
-        //InputStream ins = new FileInputStream( url.getFile() );
-        String fileName = "/zeus/etc/" + filename;
-        //try {
-            InputStream ins = new FileInputStream( fileName );
-            log.info( "Loading properties '" + fileName + "'" );
-            props.load( ins );
-            ins.close();
-        //} catch ( FileNotFoundException ex ) {
-        //    System.out.println("Не найден файл настроек: " + fileName);
-        //    ex.printStackTrace();
-        //} catch ( IOException ex ) {
-        //    System.out.println("Ошибка чтения из файла: " + fileName);
-        //}
+    	loadProperties(props, filename, "CP1251");
     }
 
+	public void loadProperties(Properties props, String filename,
+			String charsetName) throws Exception {
+		String fileName = wdUrl.getPath() + "/etc/" + filename;
+		File file = new File(fileName);
+		FileInputStream ins = new FileInputStream(file);
+		if (log != null) {
+			log.info("Loading properties '" + file.getCanonicalPath() + "'");
+		} else {
+			System.out.println("#INFO: loading properties: "
+					+ file.getCanonicalPath());
+		}
+		if (props instanceof AProperties) {
+			((AProperties) props).load(ins, charsetName);
+		} else {
+			props.load(ins);
+		}
+		ins.close();
+	}
+
+    /*
     public void loadProperties( Properties props, String filename, String charsetName ) throws Exception {
         String fileName = "/zeus/etc/" + filename;
         InputStream ins = new FileInputStream( fileName );
@@ -240,7 +245,7 @@ public class Zeus {
         }
         ins.close();
     }
-
+*/
     /**
      * Загрузка кофигурационного файла. Обычно это файл zeus.properties.
      * @param url Полное имя файла кофигурации
@@ -386,12 +391,12 @@ public class Zeus {
             instance = this;
         }
         try {
-            //log = new SimpleLogger(new SimpleLog(logproperties), Zeus.class);
+        	wdUrl = new URL("file", "", workDir);
+        	loadProperties( logproperties, "simplelog.properties" );
+        	log = new SimpleLogger( new SimpleLog(logproperties) , Zeus.class);
             log.info("Start Zeus");
             log.setTracing(false);
-            //Logger logger = Logger.;
-            // loading properties, located at up dir relative lsdsoft.jar archive
-            //URL url = ClassLoader.getSystemClassLoader().getResource("lsdsoft.jar");
+            
             //loadConfig( new URL( url, "../" + defaultPropertyName ) );
             //log.info("Config file:" + workDir + zeusPropertiesFile);
             loadProperties( config, zeusPropertiesFile, "CP125" );
@@ -435,8 +440,22 @@ public class Zeus {
     public static void logex( Exception ex ) {
         log.db( DebugLevel.L5_DEBUG , ex.getMessage() );
     }
-
+	private static void parseArguments(String[] args){
+		for(int i=0; i < args.length; i++){
+			String arg = args[i];
+			String val = null;
+			if(arg.startsWith("-wd=")){
+				val = arg.substring(4);
+				System.out.println("#INFO: work dir: " + val);
+				workDir = val;
+				
+			}
+			
+			
+		}
+	}
     public static void main( String[] args ) {
+    	parseArguments(args);
         UIManager.put( "OptionPane.yesButtonText", "Да" );
         UIManager.put( "OptionPane.noButtonText", "Нет" );
         UIManager.put( "OptionPane.cancelButtonText", "Отменить" );
@@ -453,6 +472,7 @@ public class Zeus {
         System.out.println(tracker.getRow(row)[0]);
 */
         Zeus zeus = Zeus.getInstance();
+        
         zeus.start();
     }
 
