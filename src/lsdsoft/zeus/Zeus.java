@@ -454,6 +454,11 @@ public class Zeus {
 			
 		}
 	}
+	/**
+	 * 
+	 * @param args
+	 * -wd=<workdir> установка рабочего каталога, например d:\zeus\
+	 */
     public static void main( String[] args ) {
     	parseArguments(args);
         UIManager.put( "OptionPane.yesButtonText", "ƒа" );

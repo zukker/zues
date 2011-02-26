@@ -3,7 +3,7 @@ package lsdsoft.zeus.methods;
 import lsdsoft.metrolog.unit.*;
 import lsdsoft.metrolog.*;
 import lsdsoft.units.*;
-import bsh.*;
+//import bsh.*;
 
 /**
  * <p>Title: </p>
@@ -19,7 +19,7 @@ public class InclinMethod {
     protected ChannelDataSource toolSource = null;
     protected InclinometerAngles toolAngles = new InclinometerAngles();
     protected InclinometerAngles accAngles = new InclinometerAngles();
-    protected Interpreter bsh = new Interpreter();
+    //protected Interpreter bsh = new Interpreter();
     protected MeasureDatas data = null;
     protected double lastAccurate = 0;
     protected static int measureCount = 4;
@@ -33,9 +33,9 @@ public class InclinMethod {
      * Init BeanShell interpreter with local variables
      */
     protected void initShell() throws Exception {
-        bsh.set( "unit", unit );
-        bsh.set( "toolSource", toolSource );
-        bsh.set( "data", data );
+        //bsh.set( "unit", unit );
+        //bsh.set( "toolSource", toolSource );
+        //bsh.set( "data", data );
     }
     /**
      *
