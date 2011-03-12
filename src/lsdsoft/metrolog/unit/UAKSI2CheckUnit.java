@@ -5,7 +5,8 @@ package lsdsoft.metrolog.unit;
 import java.io.*;
 import java.text.*;
 import java.util.*;
-import javax.comm.*;
+import gnu.io.*;
+//import javax.comm.*;
 
 import com.lsdsoft.comm.*;
 import lsdsoft.metrolog.*;
@@ -22,7 +23,7 @@ public class UAKSI2CheckUnit
     ChannelDataEventListener {
     private static final int UAKSI_COMMAND_IDLE = 0x00;
     private static final int UAKSI_COMMAND_GOTO_POINT = 0x55;
-    private static final int UAKSI_COMMAND_AUTO_FIND_MARKER = 0x56;
+    //private static final int UAKSI_COMMAND_AUTO_FIND_MARKER = 0x56;
     public static final int DEVICE_STATE_BAD  =  0x00;
     public static final int DEVICE_STATE_OK   =  0x01;
     public static final int DEVICE_STATE_ABSENT = 0x02;
@@ -30,7 +31,7 @@ public class UAKSI2CheckUnit
 
     // номер версии УАК-СИ: влияет на формат команд
     // пока только первая версия
-    private int version = 2;
+    public static final int version = 2;
     protected double[] UAKSI_ERRORS = {0.5, 0.08, 1};
     private static final char[] possiblePlanes = {
         'x', 'y', 'z'
@@ -40,19 +41,19 @@ public class UAKSI2CheckUnit
     private InputStream ins;
     private FIFOBuffer inputBuffer = new FIFOBuffer(4096);
     private FIFOBuffer outputBuffer = new FIFOBuffer(128);
-    private byte[] commandBuffer = new byte[5];
+    //private byte[] commandBuffer = new byte[5];
     //private byte[] inputBuffer = new byte[32];
     private int[] executedCommands = new int[3];
-    private Angle angleLimit = new Angle( 1000 );
+    //private Angle angleLimit = new Angle( 1000 );
     //private RespondEventListener respondListener = null;
     private PostChannelDataSource postSource = new PostChannelDataSource();
     private PostChannelDataSource toolSource = new PostChannelDataSource();
-    private ChannelDataSource toolOutSource;
+    //private ChannelDataSource toolOutSource;
     //private int respondMask = 0;
-    private Timer timer = new Timer( true );
+    //private Timer timer = new Timer( true );
     private Timer toolTimer = new Timer();
     private Timer accTimer = new Timer();
-    private RemainderTask task = new RemainderTask( this );
+    //private RemainderTask task = new RemainderTask( this );
     private ToolAskTask toolTask = new ToolAskTask( this );
     private AccurateAskTask accTask = new AccurateAskTask( this );
     private Channel chan1;
@@ -89,21 +90,22 @@ public class UAKSI2CheckUnit
     private double accDeltaRotate = 0;
     public String postUaksi = "";
     public String postWt = "";
-
-    public UAKSI2CheckUnit() {
+    {
+    	df = (DecimalFormat)NumberFormat.getInstance(Locale.ENGLISH);
+        df.applyPattern("#0.0");
         toolInfo.type = "uaksi2";
+    }
+    public UAKSI2CheckUnit() {
     }
 
     public UAKSI2CheckUnit( String portName ) {
-        toolInfo.type = "uaksi2";
         //connection = new CommConnection( portName );
         connection.setPortName( portName );
-//        init();
+        
     }
 
     public void init() {
-        df = (DecimalFormat)NumberFormat.getInstance(Locale.ENGLISH);
-        df.applyPattern("#0.0");
+        
         System.out.println( "Tool type: " + zeus.getToolType() );
         System.out.println( "Tool number: " + toolInfo.number );
         String propName = "uaksi2_" + toolInfo.number + ".properties";
@@ -145,15 +147,17 @@ public class UAKSI2CheckUnit
     }
 
     private void loadCorrectionTable() {
-        InclinometerAngles angs = new InclinometerAngles();
+        //InclinometerAngles angs = new InclinometerAngles();
         try {
-            Document doc = DataFactory.getDataStorage().loadXML( properties.
-                getProperty( "magnetic.correction" ) );
-            corrTable.load( doc.getDocumentElement());
-            //angs.azimut.setAngle(45.0);
-            //angs.zenit.setAngle(45.0);
-            //corrTable.correct( angs );
+        	String path = properties.getProperty( "magnetic.correction" );
+        	if(path != null) {
+        		Document doc = DataFactory.getDataStorage().loadXML( path );
+        		corrTable.load( doc.getDocumentElement());
+        	} else {
+        		System.out.println("#WARNING: не указана поправочная таблица для УАКСИ");
+        	}
         } catch ( Exception ex ) {
+        	System.err.println("#ERROR: не удлось загрузить поправочную таблицу для УАКСИ");
             System.err.println( ex.getMessage() );
         }
     }
@@ -191,7 +195,11 @@ public class UAKSI2CheckUnit
     }
     private void writeOutputBuffer() throws Exception {
         while(!outputBuffer.isEmpty()) {
-            outs.write(outputBuffer.pop());
+        	if(isConnected()) {
+        		outs.write(outputBuffer.pop());
+        	} else {
+        		throw new CheckUnitException("UAKSI is not connected");
+        	}
         }
     }
     private void readInputBuffer() throws Exception {
@@ -423,9 +431,10 @@ public class UAKSI2CheckUnit
      * @param dir can be 'c' or 'C'
      */
     public void setRotateDirection( char dir ) throws Exception {
-        outs.flush();
-        outs.write( 'c' );
-        outs.write( dir );
+        //outs.flush();
+    	outputBuffer.push( 'c' );
+        outputBuffer.push( dir );
+        exec();
     }
 
     public double getDelta( char plane ) {
@@ -457,7 +466,7 @@ public class UAKSI2CheckUnit
         try {
             goTo( plane, value );
         } catch ( Exception ex ) {
-            throw new CheckUnitException( ex.getMessage() );
+            throw new CheckUnitException( ex.toString() );
         }
     }
     protected void prepareFindMarker() throws Exception {
@@ -558,7 +567,7 @@ public class UAKSI2CheckUnit
     }
     public void readAngles() throws Exception {
         //delay(50);
-        byte b = 0;
+        //byte b = 0;
         StringBuffer str = new StringBuffer( 80 );
         synchronized ( sync ) {
             flushInput();
@@ -674,7 +683,13 @@ public class UAKSI2CheckUnit
     }
 
     public Angle getAngle( char id, Angle ang ) throws Exception {
-        if ( id == 'x' ) {
+    	ang = getAngle(id);
+        return ang;
+    }
+    
+    public Angle getAngle( char id ) {
+    	Angle ang;
+    	if ( id == 'x' ) {
             ang = lirAngles.azimuth;
         } else {
             if ( id == 'y' ) {
@@ -687,8 +702,12 @@ public class UAKSI2CheckUnit
             }
         }
         return ang;
+    }   
+    
+    public double getPosition( char id ) {
+    	return getAngle(id).getValue();
     }
-
+        
     public Angle getAzimut() throws Exception {
         //selectSensor('x');
         //readAngle(lirAngles.azimut);

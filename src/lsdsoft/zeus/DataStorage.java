@@ -37,6 +37,9 @@ public class DataStorage {
     private boolean toolInfoLoaded = false;
     private DOMParser parser = new DOMParser();
     private Document doc = null;
+    private String toolIndexPath;
+    private String methodsPath;
+    private static final char fileSeparator = File.separatorChar;
 
     public DataStorage() {
         zeus = Zeus.getInstance();
@@ -44,6 +47,11 @@ public class DataStorage {
             //Properties prop = zeus.getConfig();
             zeus.loadProperties( config, zeus.getConfig().getProperty( Zeus.
                 PROP_DATASTORAGE_PROPERTIES ));
+            String wd = zeus.getWorkDir();
+            File fn = new File(wd, config.getProperty( PROP_TOOLINDEX_PATH ));
+            toolIndexPath = fn.getCanonicalPath() + fileSeparator;
+            fn = new File(wd, config.getProperty( PROP_METHODS_PATH ));
+            methodsPath = fn.getCanonicalPath() + fileSeparator;
             //String u = zeus.getConfig().getProperty( Zeus.
             //    PROP_DATASTORAGE_PROPERTIES );
             //URL url = new URL( u );
@@ -75,26 +83,22 @@ public class DataStorage {
      * @return  орневой узел XML документа, null - если документ не найден
      */
 
-    public Node openWorkIndex(String toolType, String number) throws Exception {
-        getToolInfo();
-        loadToolNumbers(toolType);
-        ToolIndex.ToolIndexItem item = toolIndex.find(number);
-        if(item != null) {
-            String fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-                "/" + findToolInfo(toolType).getDir() + "/" +
-                item.dir +
-                "/workindex.xml";
-            File file = new File(fileName);
-            if( file.exists() ) {
-                parser.parse( new InputSource( new FileInputStream( fileName ) ) );
-                doc = parser.getDocument();
-            } else {
-                return null;
-            }
-            return doc.getDocumentElement();
-        }
-        return null;
-    }
+	public Node openWorkIndex(String toolType, String number) throws Exception {
+
+		// getToolInfo();
+		// loadToolNumbers(toolType);
+		// ToolIndex.ToolIndexItem item = toolIndex.find(number);
+		String fileName = getWorkIndexFileName(toolType, number);
+		File file = new File(fileName);
+		if (file.exists()) {
+			parser.parse(new InputSource(new FileInputStream(fileName)));
+			doc = parser.getDocument();
+		} else {
+			return null;
+		}
+		return doc.getDocumentElement();
+	}
+
     /**
      * —оздает полное им€ файла индекса работ дл€ указанного прибора.
      * @param toolType тип прибора
@@ -102,19 +106,19 @@ public class DataStorage {
      * @return полное им€ файла индекса
      * @throws Exception фигн€ кака€-то
      */
-    protected String getWorkIndexFileName(String toolType, String number) throws Exception {
-        String fileName = null;
-        getToolInfo();
-        loadToolNumbers( toolType );
-        ToolIndex.ToolIndexItem item = toolIndex.find( number );
-        if ( item != null ) {
-            fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-                "/" + findToolInfo( toolType ).getDir() + "/" +
-                item.dir +
-                "/workindex.xml";
-        }
-        return fileName;
-    }
+	protected String getWorkIndexFileName(String toolType, String number)
+			throws Exception {
+		String fileName = null;
+		getToolInfo();
+		loadToolNumbers(toolType);
+		ToolIndex.ToolIndexItem item = toolIndex.find(number);
+		if (item != null) {
+			fileName = toolIndexPath + findToolInfo(toolType).getDir()
+					+ fileSeparator + item.dir + fileSeparator
+					+ "workindex.xml";
+		}
+		return fileName;
+	}
 
     protected Document createWorkIndexDocument() throws Exception {
         //String fileName = getWorkIndexFileName(toolType, number);
@@ -167,8 +171,7 @@ public class DataStorage {
         ToolTypeInfo info = findToolInfo( toolType );
         String fileName = null;
         if ( info != null ) {
-             fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-                "/" + info.getDir() + "/toolindex.xml";
+             fileName = toolIndexPath + info.getDir() + fileSeparator + "toolindex.xml";
         }
         return fileName;
     }
@@ -197,8 +200,7 @@ public class DataStorage {
     }
 
     private void loadToolInfo() throws Exception {
-        String fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-            "/tooltypeindex.xml";
+        String fileName = toolIndexPath + "tooltypeindex.xml";
         parser.parse( new InputSource( new FileInputStream( fileName ) ) );
         doc = parser.getDocument();
         toolInfoList.load( doc.getDocumentElement() );
@@ -207,8 +209,7 @@ public class DataStorage {
 
     public AbstractMethods loadMethods( String fileName ) throws Exception {
         AbstractMethods methods = new AbstractMethods();
-        fileName = config.getProperty( PROP_METHODS_PATH ) +
-            "/" + fileName;
+        fileName = methodsPath + fileName;
         parser.parse( new InputSource( new FileInputStream( fileName ) ) );
         doc = parser.getDocument();
         methods.load( doc.getDocumentElement() );
@@ -302,8 +303,7 @@ public class DataStorage {
     public String createFileName( String toolType, String number,
                                    String suffix ) {
         String fileName = null;
-        fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-            "/" + toolType + "/" + number + "/" + suffix;
+        fileName = toolIndexPath + toolType + fileSeparator + number + fileSeparator + suffix;
         return fileName;
     }
 
@@ -386,9 +386,8 @@ public class DataStorage {
         loadToolNumbers( toolType );
         ToolIndex.ToolIndexItem item = toolIndex.find( toolNumber );
         if ( item != null ) {
-            fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-                "/" + findToolInfo( toolType ).getDir() + "/" +
-                item.dir + "/" + id + ".xml";
+            fileName = toolIndexPath + findToolInfo( toolType ).getDir() + 
+            fileSeparator + item.dir + fileSeparator + id + ".xml";
         }
         return fileName;
     }
@@ -399,9 +398,8 @@ public class DataStorage {
         loadToolNumbers( toolType );
         ToolIndex.ToolIndexItem item = toolIndex.find( toolNumber );
         if ( item != null ) {
-            fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-                "/" + findToolInfo( toolType ).getDir() + "/" +
-                item.dir + "/" + suffix;
+            fileName = toolIndexPath + findToolInfo( toolType ).getDir() + 
+            fileSeparator + item.dir + fileSeparator + suffix;
         }
         return fileName;
     }
@@ -428,16 +426,11 @@ public class DataStorage {
     protected String getMeasureDatasFileName(MeasureDatas datas) throws Exception {
         String fileName = null;
         String toolType = datas.getToolType();
-        getToolInfo();
-        loadToolNumbers( toolType );
-        ToolIndex.ToolIndexItem item = toolIndex.find( datas.getToolNumber() );
-        if ( item != null ) {
-            fileName = config.getProperty( PROP_TOOLINDEX_PATH ) +
-                "/" + findToolInfo( toolType ).getDir() + "/" +
-                item.dir + "/" + datas.getIdentifer() + ".xml";
-        }
-        return fileName;
+        String toolNumber = datas.getToolNumber();
+        String id = datas.getIdentifer();
+        return getMeasureDatasFileName(toolType, toolNumber, id);
     }
+
     protected Document createMeasureDatasDocument() {
         doc = new DocumentImpl();
         doc.appendChild(doc.createElement("work"));

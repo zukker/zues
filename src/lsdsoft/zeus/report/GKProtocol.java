@@ -88,7 +88,7 @@ public class GKProtocol {
 
     public GKProtocol( Writer outs ) {
         this.outs = outs;
-        String root = Zeus.getInstance().getRootDir();
+        String root = Zeus.getInstance().getWorkDir();
         try {
             // load document header
             String fileName = root + "etc/gk.protocol.header";

@@ -6,7 +6,8 @@ package com.lsdsoft.comm;
 
 
 import java.util.*;
-import javax.comm.*;
+import gnu.io.*;
+//import javax.comm.*;
 
 
 public class CommConnection

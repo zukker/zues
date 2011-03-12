@@ -1,6 +1,7 @@
 package lsdsoft.welltools.im.ion1;
 
 import java.io.*;
+
 import lsdsoft.zeus.*;
 import java.util.*;
 import lsdsoft.util.*;
@@ -60,9 +61,26 @@ public class ION1CorrectionTable {
             System.err.println("Unable to load 'ion1.properties'");
         }
         String fileName = props.getProperty("path.tables");
-        if( ! (fileName.endsWith("/") || fileName.endsWith("\\")) )
-            fileName += '\\';
+        String root;
+        if(fileName.startsWith(".")){
+        	root = zeus.getWorkDir();
+        } else {
+        	root = "";
+        }
+        File fn = new File(root, fileName);
+        try {
+			String ff = fn.getCanonicalPath();
+			fileName = ff;
+			
+		} catch (IOException e) {
+			System.err.println("#ERROR: invalid path to ion tables: " + fileName);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        if( ! fileName.endsWith(File.separator) )
+            fileName += File.separatorChar;
         fileName += number;
+		System.out.println("#INFO: ion table file: "+ fileName);
         return fileName;
     }
     public void setNumber(String num) {

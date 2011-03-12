@@ -128,7 +128,9 @@ public class ION1Computer {
    * поправок, набег и значения по датчикам без поправок (всего 18 значений)
    * @param out выходные значения углов: out[0] - поворот, out[1] - зенит, out[2] - азимут
    * @return какой-то код (ХЗ :)
+   * 
    */
+  // TODO расписать выходные значения массива angls
   public int calc(int[] inp, double[] angls, double[] out) {
     if(table == null)
       return -1;
