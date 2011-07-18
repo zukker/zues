@@ -171,15 +171,16 @@ public class ION1MethodsViewer
     DigitalDisplay displayTX = new DigitalDisplay( 6, 2 );
     DigitalDisplay displayTY = new DigitalDisplay( 6, 2 );
     DigitalDisplay displayTZ = new DigitalDisplay( 6, 2 );
-    ImageIcon iconOff = Zeus.createImageIcon( "images/conn_off.png" );
-    ImageIcon iconOn = Zeus.createImageIcon( "images/conn_on.png" );
-    ImageIcon iconDisk = Zeus.createImageIcon( "images/disk02.png" );
-    ImageIcon iconNote = Zeus.createImageIcon( "images/note01.png" );
+    ImageIcon iconOff = Zeus.createImageIcon( "images/disconnect.png" );
+    ImageIcon iconOn = Zeus.createImageIcon( "images/connect.png" );
+    ImageIcon iconDisk = Zeus.createImageIcon( "images/disk.32.png" );
+    ImageIcon iconNote = Zeus.createImageIcon( "images/document.32.png" );
+    ImageIcon iconCert = Zeus.createImageIcon( "images/certificate.32.png" );
     protected static final ImageIcon ICON_GEARS[] = {
-        Zeus.createImageIcon( "images/gear_1.png" ),
-        Zeus.createImageIcon( "images/gear_2.png" ),
-        Zeus.createImageIcon( "images/gear_3.png" ),
-        Zeus.createImageIcon( "images/gear_4.png" ),
+        Zeus.createImageIcon( "images/off.png" ),
+        Zeus.createImageIcon( "images/on.png" ),
+        //Zeus.createImageIcon( "images/gear_3.png" ),
+        //Zeus.createImageIcon( "images/gear_4.png" ),
     };
     protected int gearIndex = 0;
 
@@ -194,7 +195,7 @@ public class ION1MethodsViewer
     private ToolButton bSave = new ToolButton("Сохранить", iconDisk);
     private ToolButton bConnect = new ToolButton("Подключение", ICON_GEARS[0]);
     private ToolButton bProtocol = new ToolButton("Протокол", iconNote);
-    private ToolButton bSertificate = new ToolButton("Сертификат", iconNote);
+    private ToolButton bSertificate = new ToolButton("Сертификат", iconCert);
     JPanel panelDisplay = new JPanel();
     JPanel panelHeader = new JPanel();
     JLabel jLabel6 = new JLabel();
@@ -399,6 +400,7 @@ public class ION1MethodsViewer
     public void signalEvent( SignalEvent ev ) {
         SignalSource src = ev.getSource();
         if ( src.equals( toolSource ) ) {
+            //System.out.print( "T");
             if ( ev.getSignal() == SignalEvent.SIG_DATA_ARRIVED ) {
                 Channel chan = toolSource.getChannel( "angles" );
                 if ( chan == null ) {
@@ -406,14 +408,15 @@ public class ION1MethodsViewer
                 }
                 if ( chan != null ) {
                     String id = toolSource.getProperty("id");
-                    System.out.println("# ID = " + id);
+                    //System.out.println("# ID = " + id);
                     //System.out.println("### tool"+ counter++);
+                    System.out.print("### tool"+ id);
                     Value val = chan.getValue( 0 ).getAsValue();
-                    //System.out.print("Az=" + formatValue(val)+';');
+                    System.out.print("Az=" + formatValue(val)+"; ");
                     val = chan.getValue( 1 ).getAsValue();
-                    //System.out.print("Zn=" + formatValue(val)+';');
+                    System.out.print("Zn=" + formatValue(val)+"; ");
                     val = chan.getValue( 2 ).getAsValue();
-                    //System.out.println("Rt=" + formatValue(val)+';');
+                    System.out.println("Rt=" + formatValue(val)+"; ");
 
 
                     //toolAngles.zenit = chan.getValue( 1 ).angle;
@@ -447,11 +450,12 @@ public class ION1MethodsViewer
             if ( ev.getSignal() == SignalEvent.SIG_TIMEOUT ) {
                 UiUtils.showError( this, "Нет связи с прибором" );
             }
+            //System.out.print( "t");
 
         } else
         if ( src.equals( unit ) ) {
             if ( ev.getSignal() == SignalEvent.SIG_DATA_ARRIVED ) {
-                gearIndex = (gearIndex+1)%4;
+                gearIndex = (gearIndex+1)%ICON_GEARS.length;
                 bConnect.setIcon(ICON_GEARS[gearIndex]);
                 Channel chan = unit.getChannel( "angles" );
                 if ( chan != null ) {
@@ -550,7 +554,9 @@ public class ION1MethodsViewer
              */
 
         } catch ( Exception ex ) {
-            UiUtils.showError( this, ex.getLocalizedMessage() );
+            StackTraceElement[] st = ex.getStackTrace();
+            String location = st[0].getClassName()+"."+st[0].getLineNumber();
+            UiUtils.showError( this, ex.getClass().getName() +": "+ ex.getLocalizedMessage() +"\r\n"+location);
             ex.printStackTrace();
         }
         if ( !quit ) {
@@ -567,8 +573,13 @@ public class ION1MethodsViewer
         String title = "Калибровка прибора " + workState.getToolName() + " № " +
                        workState.getToolNumber();
         if(workState.getToolType().equals("ion1")) {
-            title += " | " + toolSource.getProperty( "table.filename" ) +
+            String fn = toolSource.getProperty( "table.filename" );
+            if(fn != null ) {
+            title += " | " + fn +
                 " от " + toolSource.getProperty( "table.date" );
+            } else  {
+                title += " | Без таблицы!";
+            }
         }
         this.setTitle( title );
 
@@ -1003,7 +1014,15 @@ public class ION1MethodsViewer
         double sko = 0;
         do {
             System.out.print( ':' );
-            toolSource.waitNewData();
+            //toolSource.waitNewData();
+            synchronized (toolSource) {
+            try {
+                toolSource.wait();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            }
             double v1 = chan.getValue( subchan ).getAsDouble();
             if ( v1 > 350 ) {
                 v1 -= 360;

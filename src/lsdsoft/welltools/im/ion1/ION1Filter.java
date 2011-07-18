@@ -3,6 +3,7 @@ package lsdsoft.welltools.im.ion1;
 
 import lsdsoft.metrolog.*;
 import lsdsoft.units.*;
+import lsdsoft.zeus.Zeus;
 
 
 /**
@@ -60,13 +61,14 @@ public class ION1Filter
 
         try {
             loadTable();
-            computer.setTable( table );
         } catch ( Exception ex ) {
             //System.err.println( ex.getLocalizedMessage() );
-            throw new Exception(
+            Zeus.error(
                 "Не удалось загрузить поправочную таблицу для ИОН-1 №" +
                 table.getNumber() + ".\r\n" + ex.getLocalizedMessage() );
+            table = new ION1CorrectionTable();
         }
+        computer.setTable( table );
 
     }
     public ChannelDataSource getOutputSource() {
@@ -86,6 +88,7 @@ public class ION1Filter
         if(s.equals(id))
             return;
         id = s;
+        setProperty("id", id);
         // значения по датчикам текущие и предыдущие
         for ( int i = 0; i < 12; i++ ) {
             input[i] = input[i + 12]; // сохраняем предыдущие

@@ -21,7 +21,7 @@ public class SolomonGrad {
     // coeffs for y=cA/cB(x-X0)^2 + cC/cD *(x-X0)
     private TableFunction table = new TableFunction();
     private long cX0, cA, cB, cC, cD;
-    private double[] A = new double[3];
+    private double[] A = new double[5];
 
 
     //private String name;
@@ -98,7 +98,16 @@ public class SolomonGrad {
 
 
     }
-    public void calc() {
+    public double calcPoly(double x, double[] coefs){
+        double res = 0;
+        double X = 1;
+        for(int i = 0; i < coefs.length; i++) {
+            res+= X*coefs[i];
+            X *= x;
+        }
+        return res;
+    }
+    public void calc(int degree) {
         double D, X1 = 0, X2 = 0;
         int iX0 = 0, iX1, iX2;
 
@@ -107,17 +116,33 @@ public class SolomonGrad {
             double[] X = table.getX();
             double[] Y = table.getY();
             // расчет сквадратичного приближения
-            regress.RegressPoly(2,X.length,X,Y,A);
-            // поиск нулей функции
-            // дискриминант
-            D = A[1]*A[1] - 4*A[0]*A[2];
-            if(D>=0) {
-                X1 = ( -A[1] + Math.sqrt(D) ) / ( 2 * A[2] );
-                X2 = ( -A[1] - Math.sqrt(D) ) / ( 2 * A[2] );
+            regress.RegressPoly(degree,X.length,X,Y,A);
+            
+            double r[] = null;
+            if(degree == 3) { 
+                r = EquationSolver.SolveCubicEquation(A);
             }
+            if(degree == 2) { 
+                r = EquationSolver.SolveQuadraticEquation(A);
+            }
+            if(degree == 1) { 
+                r = EquationSolver.SolveLineEquation(A);
+            }
+            iX0 = (int)r[0];
+            DecimalFraction num0 = Approximant.approx(A[3], 1E-15);
+            DecimalFraction num9 = Approximant.approx(A[2], 1E-10);
+            // поиск нулей функции
+            for(int i = 0; i < X.length; i++) {
+                System.out.println(calcPoly(X[i], A)-Y[i]);
+            }
+            double err0 = calcPoly(iX0,A);
+            
             // целые значения корней
-            iX1 = (int)Math.round(X1);
-            iX2 = (int)Math.round(X2);
+            iX1 = (int)Math.round(r[0]);
+            iX2 = iX1;
+            if(r.length>1) {
+                iX2 = (int)Math.round(r[1]);
+            }
             // должны уложиться в unsigned short
             if((iX1 > 0) && (iX1< 65535)) {
                 iX0 = iX1;
@@ -134,11 +159,13 @@ public class SolomonGrad {
             for(int i = 0; i < X.length; i++) {
                 X[i] -= iX0;
             }
-            regress.RegressPoly(2,X.length,X,Y,A);
+            regress.RegressPoly(degree,X.length,X,Y,A);
 
             DecimalFraction num1 = Approximant.approx(A[0], 6);
-            DecimalFraction num2 = Approximant.approx(A[1], 0.00001);
-            DecimalFraction num3 = Approximant.approx(A[2], 0.0000000001);
+            DecimalFraction num2 = Approximant.approx(A[1], 1E-5);
+            DecimalFraction num3 = Approximant.approx(A[2], 1E-10);
+            DecimalFraction num4 = Approximant.approx(A[3], 1E-15);
+            DecimalFraction num5 = Approximant.approx(A[4], 1E-20);
             cA = (int)num3.nominator;
             cB = (int)num3.denominator;
             cC = (int)num2.nominator;
@@ -150,6 +177,8 @@ public class SolomonGrad {
             System.out.println("B = " + cB);
             System.out.println("C = " + cC);
             System.out.println("D = " + cD);
+            System.out.println("E = " + num4.nominator);
+            System.out.println("F = " + num4.denominator);
 
             double R = 0, M = 0;
             for(int i = 0; i < X.length; i++) {
@@ -230,7 +259,7 @@ public class SolomonGrad {
             try {
                 approx.loadTable( args[0] );
                 approx.calcLine();
-                approx.calc();
+                approx.calc(3);
                 approx.writeFile( args[0] + ".grad" );
             } catch ( Exception ex ) {
             }

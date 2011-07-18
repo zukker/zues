@@ -6,9 +6,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.event.*;
 import java.net.*;
-//import com.borland.jbcl.layout.*;
 import lsdsoft.zeus.ui.*;
 import lsdsoft.util.*;
+import lsdsoft.welltools.ToolTypeInfo;
 
 
 /**
@@ -20,29 +20,26 @@ import lsdsoft.util.*;
  * @version 0.1
  */
 
-public class Wizard
+public class Wizard2
     extends JFrame {
     private int step = 0;
     private final int maxSteps = 3;
     private Zeus zeus = Zeus.getInstance();
     private String[] panelClassNames = {
-        "lsdsoft.zeus.PanelSelectWorkMode",
-        "lsdsoft.zeus.PanelSelectTool",
+        "lsdsoft.zeus.PanelSelectWorkMode2",
+        "lsdsoft.zeus.PanelSelectTool2",
         "lsdsoft.zeus.PanelSelectDatas",
     };
     private String[] panelClassNames2 = {
-        "lsdsoft.zeus.PanelSelectWorkMode",
+        "lsdsoft.zeus.PanelSelectWorkMode2",
         "lsdsoft.zeus.PanelSelectSetupMode",
     };
     private JButton bPrev = new JButton();
     private JButton bNext = new JButton();
     private JButton bExit = new JButton();
-    private ImageIcon zeusLogo = Zeus.createImageIcon( "images/zeus.png" );
-    private ImageIcon imgNext = Zeus.createImageIcon( "images/next.20.png" );
-    private ImageIcon imgPrev = Zeus.createImageIcon( "images/previous.20.png" );
-    private ImageIcon imgRun = Zeus.createImageIcon( "images/play.20.png" );
-    private ImageIcon imgExit = Zeus.createImageIcon( "images/exit.20.png" );
-    
+    private JButton bTune = new JButton();
+    private JButton bTool = new JButton();
+    private ImageIcon zeusLogo = Zeus.createImageIcon( "images/zeus2.png" );
     private Border border1;
     private TitledBorder titledBorder1;
     private String zeusNextStepClass = "zeus.wizard.nextstep";
@@ -53,11 +50,10 @@ public class Wizard
     JLabel lMain = new JLabel();
     //PaneLayout paneLayout1 = new PaneLayout();
 
-    public
-        Wizard() throws HeadlessException {
+    public Wizard2() {
         try {
             jbInit();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -143,19 +139,16 @@ public class Wizard
         border1 = new EtchedBorder( EtchedBorder.RAISED, Color.white,
                                     new Color( 134, 134, 134 ) );
         titledBorder1 = new TitledBorder( border1, "Метрологическая система" );
-        bPrev.setBounds( new Rectangle( 160, 343, 110, 38 ) );
-        bPrev.setText( "Назад " );
+        bPrev.setBounds( new Rectangle( 161, 343, 98, 26 ) );
+        bPrev.setText( "<< Назад " );
         bPrev.setEnabled( false );
-        bPrev.setIcon(imgPrev);
         bPrev.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 bPrev_actionPerformed( e );
             }
         } );
-        bNext.setBounds( new Rectangle( 270, 343, 110, 38 ) );
-        bNext.setText( "Далее" );
-        bNext.setIcon(imgNext);
-        bNext.setHorizontalTextPosition(AbstractButton.LEFT);
+        bNext.setBounds( new Rectangle( 258, 343, 101, 26 ) );
+        bNext.setText( "Далее >>" );
         bNext.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 bNext_actionPerformed( e );
@@ -167,24 +160,46 @@ public class Wizard
         this.getContentPane().setLayout( null );
         updateTitle();
         bExit.setText( "Выход" );
-        bExit.setIcon(imgExit);
         bExit.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 exit();
             }
         } );
-        bExit.setBounds( new Rectangle( 21, 343, 110, 38 ) );
+        bExit.setBounds( new Rectangle( 21, 343, 101, 26 ) );
+        bExit.setToolTipText( "" );
+
+        bTune.setText("Настройка");
+        bTune.setBounds( new Rectangle( 386, 74, 101, 26 ) );
+        bTune.setToolTipText( "Настройка УАК-СИ" );
+        bTune.addActionListener( new java.awt.event.ActionListener() {
+            public void actionPerformed( ActionEvent e ) {
+                bTune_actionPerformed( e );
+            }
+        } );
+
+        bTool.setText("Аппаратура");
+        bTool.setBounds( new Rectangle( 489, 74, 101, 26 ) );
+        bTool.setToolTipText( "Редактор списка аппаратуры" );
+        bTool.addActionListener( new java.awt.event.ActionListener() {
+            public void actionPerformed( ActionEvent e ) {
+                bTool_actionPerformed( e );
+            }
+        } );
+
+
         steps.setFont( new java.awt.Font( "Dialog", 0, 14 ) );
         steps.setBorder( BorderFactory.createLineBorder( Color.black ) );
         steps.setOpaque( false );
         steps.setBounds( new Rectangle( 161, 106, 429, 228 ) );
         steps.setLayout( null );
         this.setTitle( "Шаг" );
+        //lImage.putClientProperty("html.base",new URL("file","","d:/zeus/"));
         lImage.setIcon( zeusLogo );
+        //lImage.setText("");
         lImage.setBounds( new Rectangle( 10, 10, 151, 331 ) );
-        bBegin.setBounds( new Rectangle( 480, 344, 110, 38 ) );
+        bBegin.setToolTipText( "" );
+        bBegin.setBounds( new Rectangle( 488, 344, 101, 26 ) );
         bBegin.setText( "Начать" );
-        bBegin.setIcon(imgRun);
         bBegin.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 bBegin_actionPerformed( e );
@@ -201,9 +216,12 @@ public class Wizard
         this.getContentPane().add( bBegin, null );
         this.getContentPane().add( lMain, null );
         this.getContentPane().add( bExit, null );
-        this.getContentPane().add( bNext, null );
         this.getContentPane().add( bPrev, null );
-        this.setSize( 600, 410 );
+        this.getContentPane().add( bNext, null );
+        this.getContentPane().add( bTune, null );
+        this.getContentPane().add( bTool, null );
+        //bNext.grabFocus();
+        this.setSize( 600, 404 );
         UiUtils.toScreenCenter( this );
     }
 
@@ -257,6 +275,51 @@ public class Wizard
         zeus.getConfig().setProperty( Zeus.PROP_VIEWER_CLASS,
                                       "lsdsoft.zeus.methods.ION1MethodsViewer" );
         zeus.startViewer();
+    }
+
+    void bTune_actionPerformed( ActionEvent e ) {
+        try {
+            String cur_com = zeus.getWorkMode().getName();
+            ToolTypeInfo cur_item = DataFactory.getToolInfo( zeus.getToolType() );
+            String cur_num = zeus.getToolNumber();
+            String com = "tune";
+            zeus.setWorkMode(com);
+            Zeus.log.info("Select mode '" + com + "'" );
+            ToolTypeInfo item =DataFactory.getToolInfo( "uaksi2" );
+            zeus.setToolType( item.getID() );
+            zeus.setToolDataSourceID( item.getSourceName() );
+            Zeus.log.info("Selected tool: '" + item.getID() + "'");
+            String[] nums = DataFactory.getToolNumbers("uaksi2");
+            String num;
+            if (nums.length > 0) {
+                num = nums[0];
+            } else {
+                num = "0";
+            }
+            zeus.setToolNumber( num );
+            zeus.getConfig().setProperty( Zeus.PROP_VIEWER_CLASS,
+                                          "lsdsoft.zeus.methods.ION1MethodsViewer" );
+            zeus.startViewer();
+            zeus.setWorkMode(cur_com);
+            zeus.setToolType( cur_item.getID() );
+            zeus.setToolDataSourceID( cur_item.getSourceName() );
+            zeus.setToolNumber( cur_num );
+        } catch ( Exception ex ) {
+        }
+    }
+
+    void bTool_actionPerformed( ActionEvent e ) {
+        try {
+            String cur_com = zeus.getWorkMode().getName();
+            String com = "setup";
+            zeus.setWorkMode(com);
+            Zeus.log.info("Select mode '" + com + "'" );
+            zeus.getConfig().setProperty( Zeus.PROP_VIEWER_CLASS,
+                                          "lsdsoft.zeus.methods.ION1MethodsViewer" );
+            zeus.startViewer();
+            zeus.setWorkMode(cur_com);
+        } catch ( Exception ex ) {
+        }
     }
 
 }

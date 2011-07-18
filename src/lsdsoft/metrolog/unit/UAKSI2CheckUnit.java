@@ -92,7 +92,7 @@ public class UAKSI2CheckUnit
     public String postWt = "";
     {
     	df = (DecimalFormat)NumberFormat.getInstance(Locale.ENGLISH);
-        df.applyPattern("#0.0");
+        df.applyPattern("#0.00");
         toolInfo.type = "uaksi2";
     }
     public UAKSI2CheckUnit() {
@@ -655,7 +655,6 @@ public class UAKSI2CheckUnit
             exec();
             readPostString( str );
         }
-
         //String s = str.toString().substring(0, 8);
         String s = str.toString();
         //System.out.println(s);
@@ -753,7 +752,7 @@ public class UAKSI2CheckUnit
         public void run() {
             try {
                 if ( unit.isConnected() ) {
-                    //System.out.println( "A");
+                    //System.out.print( "A");
                     unit.readAngles();
                 }
             } catch ( Exception ex ) {
@@ -775,8 +774,9 @@ public class UAKSI2CheckUnit
         public void run() {
             try {
                 if ( unit.isConnected() ) {
-                    //System.out.println( "T");
+                    //System.out.print( "T");
                     unit.readWellToolValues();
+                    //System.out.print( "t");
                 }
             } catch ( Exception ex ) {
                 System.err.println( ex );

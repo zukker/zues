@@ -5,6 +5,9 @@ import java.util.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.io.*;
 
 import javax.swing.*;
@@ -13,9 +16,11 @@ import javax.swing.*;
 import lsdsoft.util.*;
 import org.grlea.log.*;
 import lsdsoft.welltools.*;
+import lsdsoft.welltools.im.ion1.TprvFile;
 import lsdsoft.metrolog.ToolItemInfo;
 //import com.amper.gui.ExMetalLookAndFeel;
 import com.amper.io.AProperties;
+import edu.emory.mathcs.jtransforms.dst.*;
 
 
 /**
@@ -77,8 +82,10 @@ public class Zeus {
     
     
     private static String zeusPropertiesFile = "zeus.properties";
-    private Wizard wizard;
+    private JFrame wizard;
+    private Class cWizard = Wizard.class;
     private WorkMode workMode = new WorkMode( WorkMode.MODE_CALIB );
+    
     {
     	classFile = makeClassFile();
     	startPath = makeStartPath();
@@ -86,8 +93,8 @@ public class Zeus {
     		workDir = startPath;
     	}
     	workDir = normalizePathName(workDir);
-    	System.out.println("#INFO: Start path: " + startPath);
-    	System.out.println("#INFO: work dir: " + workDir);
+    	info("Start path: " + startPath);
+    	info("Work dir: " + workDir);
     	addLibraryPathURL(workDir + "lib");
     	loadJARs();
     	
@@ -238,7 +245,7 @@ public class Zeus {
 				log.info("Loading properties '" + file.getCanonicalPath() + "'");
 			} else {
 			}
-			System.out.println("#INFO: loading properties: "
+			info("loading properties: "
 					+ file.getCanonicalPath());
 			if (props instanceof AProperties) {
 				((AProperties) props).load(ins, charsetName);
@@ -247,7 +254,7 @@ public class Zeus {
 			}
 			ins.close();
 		} else {
-			System.out.println("#ERROR: file doesn't exist: "
+			error("file doesn't exist: "
 					+ file.getCanonicalPath());
 		}
 	}
@@ -432,9 +439,34 @@ public class Zeus {
 
     public void start() {
         initUI();
-        wizard = new Wizard();
-        wizard.setVisible( true );
-        wizard.start();
+        startWizard();
+        
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void startWizard() {
+        String className = config.getProperty("wizard",Wizard.class.getName());
+        Class cls = cWizard;
+        try {
+            cls = Class.forName( className );
+        } catch (ClassNotFoundException e1) {
+            // error getting class for name. leave default wizard class
+            info("Не найден указанный мастер, выбран по умолчанию...");
+        }
+        try {
+            // wizard must be instance of JFrame
+            wizard = (JFrame)cls.newInstance();
+            Method method = cls.getMethod( "start", null );
+            method.invoke( wizard, (Object[])null );
+            wizard.setVisible(true);
+            // TODO text antialiasing!???
+            Graphics2D gc = (Graphics2D)wizard.getContentPane().getGraphics();
+            gc.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+
+        } catch (Exception e) {
+            error(e.getLocalizedMessage());
+        }
     }
 
     private Zeus() {
@@ -448,11 +480,7 @@ public class Zeus {
             log.info("Start Zeus");
             log.setTracing(false);
             
-            //loadConfig( new URL( url, "../" + defaultPropertyName ) );
-            //log.info("Config file:" + workDir + zeusPropertiesFile);
             loadProperties( config, zeusPropertiesFile, "CP125" );
-            //loadProperties( config, config.getProperty("userconfig"), "Cp1251" );
-            //loadViewers( new URL(config.getProperty(PROP_VIEWERS_PROPERTIES)));
             loadProperties( viewers, config.getProperty( PROP_VIEWERS_PROPERTIES ) );
             loadProperties( datasources, config.getProperty( PROP_DATASOURCES_PROPERTIES ) );
             loadProperties( rigs, config.getProperty( PROP_RIGS_PROPERTIES, PROP_RIGS_PROPERTIES ) );
@@ -461,16 +489,13 @@ public class Zeus {
             setToolName();
         } catch ( Exception ex ) {
             log.error( ex.getMessage());
-            System.err.println( ex.getMessage() );
+            error( ex.getMessage() );
         }
     }
     private void loadJARs() {
     	File file = new File(workDir + "lib");
     	try {
 			addClassPathURL(file.toURI().toURL());
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		} catch (Throwable e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -486,11 +511,11 @@ public class Zeus {
 					addClassPathURL(files[i].toURI().toURL());
 					count++;
 				} catch (Throwable e) {
-	    			System.err.println(e.getMessage());
+	    			error(e.getMessage());
 				}
     		}
     	}
-		System.out.println("#INFO: loaded JARs[" + count + "] from " + file.getPath() );
+		info("loaded JARs[" + count + "] from " + file.getPath() );
     }
     
     private static void addClassPathURL(URL path) throws Throwable {
@@ -511,34 +536,38 @@ public class Zeus {
         // URL файла для добавления к classpath
         method.invoke(urlClassLoader, new Object[]{ path });
     }
-    
+    /**
+     * 
+     * @param path
+     */
     private static void addLibraryPathURL(String path) {
     	Class urlClass = ClassLoader.class;
         
         try {
+            // достаем поле sys_paths из ClassLoader
 			Field fss = urlClass.getDeclaredField("sys_paths");
+			// делаем его доступным
 			fss.setAccessible(true);
+			// обнуляем значение. теперь при следущем вылове loadLibrary
+			// загрузчик обновит sys_paths из java.library.path
 			fss.set(null, null);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+		// извлекаем значение путей 
         String lib = System.getProperty("java.library.path","");
-    	System.out.println(lib);
+    	//System.out.println(lib);
+        // добавляем свой путь в начало списка
     	lib = path + File.pathSeparator + lib;
-			
+		// устанавливаем новое значение
     	System.setProperty("java.library.path", lib);
-    	lib = System.getProperty("java.library.path","");
-    	System.out.println(lib);
+    	//System.out.println(lib);
     	//System.loadLibrary("rxtxSerial");
     }
     	   
     private void initUI() {
         try {
-            UIManager.put( "OptionPane.yesButtonText", "Да" );
-            UIManager.put( "OptionPane.noButtonText", "Нет" );
-            UIManager.put( "OptionPane.cancelButtonText", "Отменить" );
-        	LookAndFeel laf;
+            LookAndFeel laf;
         	String className = config.getProperty("laf", "");
         	try {
 				Object cls = Class.forName(className).newInstance();
@@ -547,9 +576,12 @@ public class Zeus {
 					UIManager.setLookAndFeel( laf );
 				}
 			} catch (Exception e) {
-				System.out.println("#ERROR: can't set laf : " + className);
+				error("can't set laf : " + className);
 			}
-			System.out.println("#INFO: laf: " + UIManager.getLookAndFeel().getName());
+			UIManager.put( "OptionPane.yesButtonText", "Да" );
+			UIManager.put( "OptionPane.noButtonText", "Нет" );
+			UIManager.put( "OptionPane.cancelButtonText", "Отменить" );
+			info("laf: " + UIManager.getLookAndFeel().getName());
         } catch ( Exception ex ) {
             System.err.println( ex.getMessage() );
         }
@@ -560,7 +592,7 @@ public class Zeus {
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
-            System.err.println("Couldn't find file: " + path);
+            error("Couldn't find file: " + path);
             return null;
         }
     }
@@ -615,7 +647,15 @@ public class Zeus {
     	path = normalizePathName(path);
     	return path;
     }
+    
+    public static void info(String message) {
+        System.out.println("#INFO: " + message);
+    }
 
+    public static void error(String message) {
+        System.err.println("#ERROR: " + message);
+    }
+    
     public static void logex( Exception ex ) {
         log.db( DebugLevel.L5_DEBUG , ex.getMessage() );
     }
@@ -625,7 +665,7 @@ public class Zeus {
 			String val = null;
 			if(arg.startsWith("-wd=")){
 				val = arg.substring(4);
-				System.out.println("#INFO: setting work dir: " + val);
+				info("setting work dir: " + val);
 				workDir = val;
 				
 			} else
@@ -651,13 +691,16 @@ public class Zeus {
 	 */
     public static void main( String[] args ) {
     	parseArguments(args);
-    	Properties prop = System.getProperties();
-    	prop.save(System.out, "");
+    	
+    	//TprvFile tp = new TprvFile();
+    	//tp.load("E:/Projects/toolsoft/inclinometers/ИОН Тарировка AVS/Предварительные/021103.tprv");
+    	//Properties prop = System.getProperties();
+    	//prop.save(System.out, "");
         Zeus zeus = Zeus.getInstance();
         zeus.start();
     }
 
-
+    
 
 
 }

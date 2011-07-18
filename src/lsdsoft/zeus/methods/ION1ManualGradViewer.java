@@ -1,6 +1,7 @@
 package lsdsoft.zeus.methods;
 
 
+import java.io.File;
 import java.lang.reflect.*;
 import java.lang.Character;
 import java.text.*;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -19,6 +21,7 @@ import lsdsoft.metrolog.*;
 import lsdsoft.metrolog.unit.*;
 import lsdsoft.units.*;
 import lsdsoft.util.*;
+import lsdsoft.welltools.im.ion1.TprvFile;
 import lsdsoft.zeus.*;
 import lsdsoft.zeus.ui.*;
 
@@ -139,12 +142,20 @@ public class ION1ManualGradViewer
     private RemainderTask task = new RemainderTask( );
 
     DecimalFormat angleFormat = new DecimalFormat();
+    
+    
     static int FILTER_SIZE = 9;
     MedianFilter mfilter1 = new MedianFilter( FILTER_SIZE );
     MedianFilter mfilter2 = new MedianFilter( FILTER_SIZE );
     UAKSI2CheckUnit unit = null;
     InclinometerAngles accAngles = new InclinometerAngles();
     ChannelDataSource toolSource = null;
+    TprvFile tprv = new TprvFile();
+    SplineInterpolation splineAz = new SplineInterpolation();
+    File tprvFile = null;
+    long tprvModified = 0;
+    
+    
     DigitalDisplay displayAX = new DigitalDisplay( 6, 2 );
     DigitalDisplay displayAY = new DigitalDisplay( 6, 2 );
     DigitalDisplay displayAZ = new DigitalDisplay( 6, 2 );
@@ -155,6 +166,7 @@ public class ION1ManualGradViewer
     
 
     CommandExecuter executer;
+    JLabel lTprvFile = new JLabel();
     // панель показаний УАКСИ
     JPanel panelDisplay = new JPanel();
     JLabel lZenith = new JLabel();
@@ -164,7 +176,6 @@ public class ION1ManualGradViewer
     JImage imgDigAY = new JImage( displayAY.getImage() );
     JImage imgDigAZ = new JImage( displayAZ.getImage() );
     TitledBorder titledBorderAcc;
-    //
     Border lineBorder; // black 1px line border
     // панель шагов методики
     JPanel panelSteps = new JPanel();
@@ -288,18 +299,21 @@ public class ION1ManualGradViewer
       }
 
     public void commandRun() {
-    	System.out.println("Executing commandRun()");
-    	DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-        treeSteps.getLastSelectedPathComponent();
+        System.out.println("Executing commandRun()");
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeSteps
+                .getLastSelectedPathComponent();
 
-    	if (node == null) return;
+        if (node == null)
+            return;
 
-    	Object nodeInfo = node.getUserObject();
-    	if (node.isLeaf()) {
-    		ION1GradCommand.Command cmd = (ION1GradCommand.Command)nodeInfo;
-    		System.out.println(cmd.method);
-    		execCommand(cmd);
-    	} 
+        Object nodeInfo = node.getUserObject();
+        if (node.isLeaf()) {
+            ION1GradCommand.Command cmd = (ION1GradCommand.Command) nodeInfo;
+            System.out.println(cmd.method);
+            isSelectNextAfterFinish = true;
+            execCommand(cmd);
+            //selectNextStep();
+        }
     }
     
     public void commandStop() {
@@ -323,6 +337,39 @@ public class ION1ManualGradViewer
     	// TODO запуск обозревателей через пул 
     	zeus.startViewer("uaksi2","","tune");
     }
+    
+    public void commandOpenTprv() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "tprv files", "tprv");
+        chooser.setFileFilter(filter);
+        chooser.setCurrentDirectory(new File(zeus.getWorkDir()));
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+           System.out.println("You chose to open this file: " +
+                chooser.getSelectedFile().getName());
+           tprvFile = chooser.getSelectedFile();
+           lTprvFile.setText(tprvFile.getAbsolutePath());
+        }
+
+    }
+    
+    public void selectNextStep() {
+        int[] rows = treeSteps.getSelectionRows();
+        if(rows.length>0) {
+            int newRow = rows[0]+1;
+            treeSteps.setSelectionRow(newRow);
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeSteps
+            .getLastSelectedPathComponent();
+            if (!node.isLeaf()) {
+                treeSteps.expandRow(newRow);
+                treeSteps.setSelectionRow(newRow + 1);
+            }   
+        }
+        //if (node == null)
+        //    return;
+    }
+    
     static final int PLANE_AX = 3;
     static final int PLANE_AY = 4;
     static final int PLANE_AZ = 5;
@@ -356,11 +403,19 @@ public class ION1ManualGradViewer
 			addMessage("Ошибка: "+e.getMessage());
 		}
     }
-
+    /**
+     * По методике при градуировке Ax-Hyz надо установить Az=0 Ax=0
+     * Но при таком положении Az показания датчика Ax практически не меняются.
+     * Для нормального положительного прироста показаний Уакси и датчика Ax 
+     * надо установить Az = 90.
+     * @param plane
+     * @param point
+     * @param acc
+     */
     public void goToSensor(int plane, double point, double acc) {
     	final int sensIndex[] = {0, 0, 0, ION1_AX, ION1_AY, ION1_AZ };
     	final char uaksiPlanes[]= {'x', 'y', 'z', 'y', 'y', 'z'};
-    	final byte positiveDir[]={ 1, 1, 1, 1, -1, 1, };
+    	final byte positiveDir[]={ 1, 1, 1, 1, 1, 1, };
     	byte dir = positiveDir[plane];
     	char uaksiPlane = uaksiPlanes[plane];
     	int sensorIndex = sensIndex[plane];
@@ -462,11 +517,11 @@ public class ION1ManualGradViewer
     }
 
     public void doJoinZenithAy(){
-    	addMessage("Совмещение зенита с показанием датчика Ax");
+    	addMessage("Совмещение зенита с показанием датчика Ay");
     	InclinometerAngles ang = unit.getAccurateDelta();
         ang.zenith.setAngle( 0 );
         Util.delay( 200 );
-        double val = ion1Sensors[ION1_AX];
+        double val = ion1Sensors[ION1_AY];
         if(Math.abs(360 - val)<val) {
         	val -= 360;
         }
@@ -525,7 +580,8 @@ public class ION1ManualGradViewer
         	}
         	ion1Sensors[ION1_AX]= 360.0 - ion1Sensors[ION1_AX];
         	ion1Sensors[ION1_AY]= 360.0 - ion1Sensors[ION1_AY];
-        	
+        	updateTprv();
+        	correctIonValues();
         	updateIon1();
         	/*
             lAx.setText( formatAngle(ion1Sensors[12]));
@@ -544,6 +600,50 @@ public class ION1ManualGradViewer
         }
 
     }
+    private void correctIonValues() {
+        double az = ion1Sensors[ION1_AZ];
+        double corr = splineAz.calc(az);
+        az = az - corr - tprv.other[TprvFile.AZ_ZERO];
+        ion1Sensors[ION1_AZ] = normalizeAngle(az);
+    }
+
+    static private double normalizeAngle(double d) {
+        if(d < 0) {
+            d += 360.0;
+        }
+        if ( d >360.0) {
+            d -= 360.0;
+        }
+        return d;
+    }
+
+    /**
+     * Загрузка промежуточного файла только если он обновился
+     */
+    private void updateTprv() {
+        if(tprvFile != null) {
+            long modified = tprvFile.lastModified();
+            if( tprvModified != modified ) { // file updated? need reread
+                Zeus.info("reload tprv... " );
+                tprv.load(tprvFile.getAbsolutePath());
+                tprvModified = modified;
+                TableFunction table = new TableFunction();
+                double x = 0.0;
+                double[] data = tprv.azHxy.A;
+                int len = data.length;
+                if (len > 0) {
+                    double y0 = data[0];
+                    for (int i = 0; i < len; i++) {
+                        table.add(x, data[i] - x - y0);
+                        x += 5.0;
+                    }
+                }
+                splineAz.buildByTable(table);
+            }
+        }
+        
+    }
+
     public void signalEvent( SignalEvent ev ) {
         SignalSource src = ev.getSource();
         if ( src.equals( toolSource ) ) {
@@ -623,7 +723,7 @@ public class ION1ManualGradViewer
     
     private void jbInit() throws Exception {
         this.getContentPane().setLayout( null );
-        this.setSize( 680, 605 );
+        this.setSize( 680, 625 );
         this.setResizable(false);
         this.setState( Frame.NORMAL );
         this.setTitle( "Градуировка прибора " + workState.getToolName() + " № " +
@@ -636,11 +736,22 @@ public class ION1ManualGradViewer
         // init tableX
         //scrollPaneY.setAutoscrolls( true );
         //scrollPaneY.setDebugGraphicsOptions( 0 );
+        JButton bTprv = new JButton("tprv");
+        bTprv.setBounds(10, 5, 60, 25);
+        bTprv.setActionCommand( "openTprv" );
+        bTprv.addActionListener( this );
+        this.getContentPane().add( bTprv, null );
+        
+        lTprvFile.setBounds(70, 5, 600, 25);
+        lTprvFile.setFont(new Font( "Dialog", Font.BOLD, 12 ));
+        lTprvFile.setText("...");
+        this.getContentPane().add( lTprvFile, null );
+        
         // панель показаний УАКСИ
         titledBorderAcc = new TitledBorder( lineBorder, "Показания УАКСИ" );
         panelDisplay.setLayout(null);
         panelDisplay.setBorder( titledBorderAcc );
-        panelDisplay.setBounds( new Rectangle( 400, 10, 266, 150 ) );
+        panelDisplay.setBounds( new Rectangle( 400, 30, 266, 150 ) );
         lAzimuth.setText( "АЗИМУТ" );
         lAzimuth.setBounds( new Rectangle( 10, 30, 60, 15 ) );
         lAzimuth.setHorizontalAlignment( SwingConstants.RIGHT );
@@ -666,10 +777,10 @@ public class ION1ManualGradViewer
         // панель показаний ИОН1
         panelIon1.setLayout(null);
         panelIon1.setBorder( new TitledBorder( lineBorder, "Показания ИОН1" ) );
-        panelIon1.setBounds( new Rectangle( 400, 205, 266, 155 ) );
+        panelIon1.setBounds( new Rectangle( 400, 225, 266, 155 ) );
         this.getContentPane().add( panelIon1, null );
         // ---- конец.панель показаний ИОН-1
-        bConfig.setBounds(new Rectangle(465, 165, 200, 36) );
+        bConfig.setBounds(new Rectangle(465, 185, 200, 36) );
         bConfig.setText( "Настройка УАК-СИ..." );
         bConfig.setIcon(iconConfig);
         bConfig.setActionCommand( "config" );
@@ -683,7 +794,7 @@ public class ION1ManualGradViewer
         //treeSteps.setPreferredSize(new Dimension(350, 200));
         panelSteps.setLayout( new BorderLayout());
         panelSteps.setBorder( new TitledBorder( lineBorder, "Шаги методики" ) );
-        panelSteps.setBounds( new Rectangle( 10, 10, 375, 350 ) );
+        panelSteps.setBounds( new Rectangle( 10, 30, 375, 350 ) );
         panelSteps.add( new JScrollPane(treeSteps) );
         this.getContentPane().add( panelSteps, null );
         JPanel jp1 = new JPanel();
@@ -716,7 +827,7 @@ public class ION1ManualGradViewer
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		logger.setEditable(false);
         logger.setFont(new Font("Tahoma",Font.PLAIN,12));
-        scrollPane.setBounds(10, 372, 600, 200);
+        scrollPane.setBounds(10, 392, 650, 200);
         this.getContentPane().add(scrollPane, null);
         // ------
         Font fontSans = new Font("SansSerif", 1, 12 );
@@ -1034,10 +1145,14 @@ public class ION1ManualGradViewer
     public void doAxHyz() {
 
     }
-     protected void startProcess() {
-        //execCommand(( Command ) cbDo.getSelectedItem() );
-        System.out.println( "Process started" );
+
+    protected void startProcess() {
+        // execCommand(( Command ) cbDo.getSelectedItem() );
+        System.out.println("Process started");
     }
+
+    protected boolean isSelectNextAfterFinish = true;
+     
     protected void execCommand(ION1GradCommand.Command command) {
         if ( executer != null ) {
             if ( executer.isAlive() ) {
@@ -1132,6 +1247,10 @@ public class ION1ManualGradViewer
                 System.err.println( ex.getCause().getMessage() );
             }
             finally {
+            }
+            if(viewer.isSelectNextAfterFinish){
+                selectNextStep();
+                isSelectNextAfterFinish = false;
             }
         }
     }

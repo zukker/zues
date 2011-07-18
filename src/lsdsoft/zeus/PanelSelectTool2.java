@@ -19,7 +19,7 @@ import org.grlea.log.*;
  * @version 0.1
  */
 
-public class PanelSelectTool
+public class PanelSelectTool2
     extends JPanel {
 
     private Properties zeusProps = Zeus.getInstance().getConfig();
@@ -32,7 +32,7 @@ public class PanelSelectTool
     JComboBox cbChannels = new JComboBox();
     JLabel lChannel = new JLabel();
 
-    public PanelSelectTool() {
+    public PanelSelectTool2() {
         try {
             zeusProps.setProperty( zeusNextStepClass,
                                    "lsdsoft.zeus.PanelSelectWorkMode" );
@@ -43,40 +43,32 @@ public class PanelSelectTool
     }
 
     private void jbInit() throws Exception {
-        this.setLayout( null );
         this.setSize( new Dimension( 338, 200 ) );
+        this.setVisible( true );
+        lToolType.setText("Выберите тип аппаратуры" );
+        //jLabel1.setFont(new java.awt.Font("Dialog", 0, 14));
+        lToolType.setBounds( new Rectangle( 25, 19, 293, 17 ) );
+        this.setLayout( null );
+        //cbTools.setFont(new java.awt.Font("Lucida Sans", Font.BOLD, 14));
         cbTools.setBounds( new Rectangle( 35, 41, 260, 24 ) );
-        cbTools.setEditable(false);
-        this.add( cbTools, null );
         buildToolTypeList();
+        buildNumberList();
+        buildChannelList();
 
         cbTools.addActionListener(
             new ActionListener() {
-            public void actionPerformed( ActionEvent evt ) {
-                Object sitem = cbTools.getSelectedItem();
-                if ( ! ( sitem instanceof ToolTypeInfo ) ) {
-                    return;
-                }
-                ToolTypeInfo item = ( ToolTypeInfo )sitem;
+            public void actionPerformed( ActionEvent e ) {
+                 ToolTypeInfo item = ( ToolTypeInfo ) cbTools.getSelectedItem();
                 if ( item != null ) {
                     zeus.setToolType( item.getID() );
                     zeus.setToolDataSourceID( item.getSourceName() );
-                    Zeus.log.info( "Selected tool: '" + item.getID() + "'" );
+                    Zeus.log.info("Selected tool: '" + item.getID() + "'");
                     buildNumberList();
-                    //buildChannelList();
+                    buildChannelList();
                 }
             }
         }
         );
-
-
-
-
-
-        lToolType.setText("Выберите тип аппаратуры" );
-        lToolType.setBounds( new Rectangle( 25, 19, 293, 17 ) );
-
-
 
         //Zeus.setWellToolType(((WellToolInfo)info[0]).getID());
         //cbTools.addItem("КСА-Т7");
@@ -101,8 +93,6 @@ public class PanelSelectTool
         lChannel.setText("Выберите канал");
         lChannel.setBounds(new Rectangle(24, 144, 178, 20));
         cbChannels.setBounds(new Rectangle(35, 175, 260, 24));
-
-        /*
         cbChannels.addActionListener(
             new ActionListener() {
             public void actionPerformed( ActionEvent e ) {
@@ -110,48 +100,40 @@ public class PanelSelectTool
                 if ( channel != null ) {
                     zeus.setToolChannel( channel.getID() );
                     zeus.log.info("Selected channel: '" + channel.getID() + "'");
-                    buildNumberList();
+                    //buildNumberList();
                     //buildChannelList();
                 }
             }
         }
         );
-*/
         this.add( lToolType, null );
-
-
+        this.add( cbTools, null );
         this.add( lToolNumber, null );
         this.add( cbNumbers, null );
-        this.add(lChannel, null);
-        this.add(cbChannels, null);
-        buildNumberList();
-        buildChannelList();
-        this.setVisible( true );
+        //this.add(lChannel, null);
+        //this.add(cbChannels, null);
 
     }
 
     /**
      * Создание списка типов прибора для cbTools combobox
      */
-    public void buildToolTypeList() {
+    public void
+        buildToolTypeList() {
         try {
-            int index = -1;
             cbTools.removeAllItems();
             ToolTypeInfo[] info = DataFactory.getToolsInfo();
             String selectedTool = zeus.getToolType();
-
             for ( int i = 0; i < info.length; i++ ) {
-                cbTools.addItem( info[i] );
-                String s = ( ( ToolTypeInfo )info[i] ).getID();
+                cbTools.addItem( ( ToolTypeInfo ) info[i] );
+                String s = ( ( ToolTypeInfo ) info[i] ).getID();
                 if ( selectedTool.equals( s ) ) {
-                    index = i;
+                    cbTools.setSelectedIndex( i );
+
                 }
             }
-
-            cbTools.setSelectedIndex( index );
-
         } catch ( Exception ex ) {
-            Zeus.log.error( ex.getMessage() );
+            zeus.log.error( ex.getMessage() );
             System.err.println( ex.getMessage() );
         }
     }
@@ -164,15 +146,12 @@ public class PanelSelectTool
             cbNumbers.removeAllItems();
             String selectedNumber = zeus.getToolNumber();
             String[] nums = DataFactory.getToolNumbers();
-
             for ( int i = 0; i < nums.length; i++ ) {
                 cbNumbers.addItem( nums[i] );
                 if ( selectedNumber.equals( nums[i] ) ) {
                     cbNumbers.setSelectedIndex( i );
                 }
             }
-
-
             if(cbNumbers.getSelectedIndex() <= 0) {
                 if(nums.length > 0) {
                     cbNumbers.setSelectedIndex( 0 );
@@ -183,7 +162,7 @@ public class PanelSelectTool
             }
 
         } catch ( Exception ex ) {
-            Zeus.logex( ex );
+            zeus.logex( ex );
             //zeus.log.dbe( DebugLevel.L3_WARN, ex.getCause() );
             System.err.println( ex.getMessage() );
         }
