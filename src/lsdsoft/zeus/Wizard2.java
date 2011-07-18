@@ -5,8 +5,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.event.*;
-import java.net.*;
-import lsdsoft.zeus.ui.*;
 import lsdsoft.util.*;
 import lsdsoft.welltools.ToolTypeInfo;
 
@@ -40,6 +38,10 @@ public class Wizard2
     private JButton bTune = new JButton();
     private JButton bTool = new JButton();
     private ImageIcon zeusLogo = Zeus.createImageIcon( "images/zeus2.png" );
+    private ImageIcon imgNext = Zeus.createImageIcon( "images/next.20.png" );
+    private ImageIcon imgPrev = Zeus.createImageIcon( "images/previous.20.png" );
+    private ImageIcon imgRun = Zeus.createImageIcon( "images/play.20.png" );
+    private ImageIcon imgExit = Zeus.createImageIcon( "images/exit.20.png" );
     private Border border1;
     private TitledBorder titledBorder1;
     private String zeusNextStepClass = "zeus.wizard.nextstep";
@@ -140,15 +142,18 @@ public class Wizard2
                                     new Color( 134, 134, 134 ) );
         titledBorder1 = new TitledBorder( border1, "Метрологическая система" );
         bPrev.setBounds( new Rectangle( 161, 343, 98, 26 ) );
-        bPrev.setText( "<< Назад " );
+        bPrev.setText( "Назад " );
         bPrev.setEnabled( false );
+        bPrev.setIcon(imgPrev);
         bPrev.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 bPrev_actionPerformed( e );
             }
         } );
         bNext.setBounds( new Rectangle( 258, 343, 101, 26 ) );
-        bNext.setText( "Далее >>" );
+        bNext.setText( "Далее" );
+        bNext.setIcon(imgNext);
+        bNext.setHorizontalTextPosition(AbstractButton.LEFT);
         bNext.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 bNext_actionPerformed( e );
@@ -160,6 +165,7 @@ public class Wizard2
         this.getContentPane().setLayout( null );
         updateTitle();
         bExit.setText( "Выход" );
+        bExit.setIcon(imgExit);
         bExit.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 exit();
@@ -200,6 +206,7 @@ public class Wizard2
         bBegin.setToolTipText( "" );
         bBegin.setBounds( new Rectangle( 488, 344, 101, 26 ) );
         bBegin.setText( "Начать" );
+        bBegin.setIcon(imgRun);
         bBegin.addActionListener( new java.awt.event.ActionListener() {
             public void actionPerformed( ActionEvent e ) {
                 bBegin_actionPerformed( e );
