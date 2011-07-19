@@ -137,7 +137,10 @@ public class ChannelDataSource extends SignalSource
   public synchronized void waitNewData() {
       String str;
       str = Zeus.getInstance().getProperty("debug", "off");
-      if (str.equals("on")) return;
+      if (str.equals("on")) {
+          try { Thread.sleep(100); } catch ( InterruptedException ex ) {}
+    	  return;
+      }
       if(hasNewData) {
           hasNewData = false;
           return;
