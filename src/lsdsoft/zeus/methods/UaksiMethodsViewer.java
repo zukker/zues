@@ -841,6 +841,14 @@ public class UaksiMethodsViewer
     }
 
     Value doMeasureAccurate( char plane ) {
+        int subchan = planeToIndex(plane);
+        Channel chan = unit.getChannel("angles");
+        System.out.print('_');
+        unit.waitNewData();
+        Value val = chan.getValue(subchan).getAsValue();
+        Value ret = new Value(val.value, val.delta);
+        return ret;
+        /*
         double val = 0;
         double err = 0;
         int subchan = planeToIndex( plane );
@@ -856,6 +864,7 @@ public class UaksiMethodsViewer
         val /= 4.0;
         Value value = new Value(val, err);
         return value;
+        */
     }
 
     Value doMeasureTool( char plane ) {
